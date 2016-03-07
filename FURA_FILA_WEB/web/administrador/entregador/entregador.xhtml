@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <ui:composition template="../template.xhtml" >
+        <ui:define name="corpo">
+            <h:body>
+                <h:form id="formEntregador">
+
+                    <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                        <h:outputLabel value="#{msg.rotuloEntregador}"  styleClass="labelTitulo" />
+                    </div>
+                    <p:separator styleClass="separador" />
+
+                    <div style="float: left;width: 80%;">
+                        <p:dataTable id="dtUsuarios"
+                                     value="#{entregadoresBean.lstEntregadores}"
+                                     var="entregador"
+                                     scrollable="true"
+                                     scrollHeight="450"
+                                     stickyHeader="true"
+                                     selectionMode="single"
+                                     selection="#{entregadoresBean.login}"
+                                     rowKey="#{entregador.id_login}">
+
+                            <p:ajax event="rowSelect" listener="#{entregadoresBean.habilitarBotaoExcluir}" update=":formEntregador:btnEditar :formEntregador:btnExcluir :formEntregador:btnDisponivel" />
+                            <p:ajax event="rowUnselect" listener="#{entregadoresBean.desabilitarBotaoExcluir}" update=":formEntregador:btnEditar :formEntregador:btnExcluir :formEntregador:btnDisponivel" />
+
+
+                            <p:column headerText="#{msg.rotuloEntregadores}"  >
+                                #{entregador.usuario}
+                            </p:column>
+                            <p:column headerText="#{msg.rotuloStatus}"  >
+                                #{entregador.statusExibicao}
+                            </p:column>
+                            <p:column headerText="#{msg.rotuloDisponivel}"  >
+                                #{entregador.disponivel_entregaExibicao}
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div style="float: right;width: 20%" align="center">
+                        <p:panel>
+                            <p:commandButton value="#{msg.rotuloPaginaUsuarioAddUsuario}" 
+                                             action="#{entregadoresBean.inicializarNovoEntregador()}"
+                                             ajax="false"
+                                             style="width: 100%"/>
+
+                            <p:commandButton id="btnEditar"
+                                             value="#{msg.rotuloPaginaUsuarioEditarUsuario}"
+                                             action="#{entregadoresBean.inicializarEditarEntregador()}"
+                                             ajax="false"
+                                             style="width: 100%"
+                                             disabled="#{entregadoresBean.flgBtnExcluir}">
+                            </p:commandButton>
+
+                            <p:commandButton id="btnExcluir"
+                                             value="#{entregadoresBean.mudarNomeBotao()}"
+                                             onclick="PF('wdgConfirmaDesativacao').show()"
+                                             style="width: 100%"
+                                             disabled="#{entregadoresBean.flgBtnExcluir}"/>
+
+                            <p:commandButton id="btnDisponivel"
+                                             value="#{entregadoresBean.mudarNomeBotaoDisponivel()}"
+                                             onclick="PF('wdgConfirmaIndisponibilidade').show()"
+                                             style="width: 100%"
+                                             disabled="#{entregadoresBean.flgBtnExcluir}"/>
+                        </p:panel>
+                    </div>
+
+                </h:form>
+                <h:form>
+                    <p:confirmDialog widgetVar="wdgConfirmaDesativacao" message="#{msg.mensagemTemCerteza}">
+                        <p:commandButton value="#{msg.rotuloSim}" 
+                                         actionListener="#{entregadoresBean.alterarStatus}" 
+                                         oncomplete="PF('wdgConfirmaDesativacao').hide()"
+                                         update=":formEntregador:dtUsuarios :formEntregador:btnExcluir :formEntregador:btnDisponivel"/>
+                        <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgConfirmaDesativacao').hide()" />
+                    </p:confirmDialog>
+
+                    <p:confirmDialog widgetVar="wdgConfirmaIndisponibilidade" message="#{msg.mensagemTemCerteza}">
+                        <p:commandButton value="#{msg.rotuloSim}" 
+                                         actionListener="#{entregadoresBean.alterarDisponibilidade}" 
+                                         oncomplete="PF('wdgConfirmaIndisponibilidade').hide()"
+                                         update=":formEntregador:dtUsuarios  :formEntregador:btnExcluir :formEntregador:btnDisponivel"/>
+                        <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgConfirmaIndisponibilidade').hide()" />
+                    </p:confirmDialog>
+
+                </h:form>
+
+            </h:body>
+        </ui:define>
+    </ui:composition>
+
+</html>

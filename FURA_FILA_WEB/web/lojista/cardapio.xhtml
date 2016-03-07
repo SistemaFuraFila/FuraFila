@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formCardapio">
+
+                <f:metadata>  
+                    <f:event type="preRenderView" listener="#{produtoBean.popularCardapio()}" />  
+                </f:metadata> 
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="#{msg.rotuloCatalogo}"  styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+                <p:growl id="grMsg" showDetail="true" life="5000"/>
+
+                <p:dataTable id="dgvCardapio"
+                             selectionMode="single"
+                             var="cardapio"
+                             value="#{produtoBean.lstCardapio}"
+                             selection="#{produtoBean.produtos}"
+                             paginator="true"
+                             rows="8"
+                             rowKey="#{cardapio.id_produto}"
+                             editable="true"
+                             emptyMessage="#{msg.rotuloSemRegistros}">
+
+                    <p:ajax event="rowSelect" oncomplete="PF('dlgPrecoVar').show()" update=":formCardapio:dlgPreco" />
+
+                    <p:column headerText="#{msg.rotuloProduto}" >
+                        #{cardapio.produto_desc}
+                    </p:column>
+
+                    <p:column headerText="#{msg.rotuloTipoProduto}">
+                        #{cardapio.tipoProduto.tipo_produto_desc}
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloVlUnitario}">
+                        #{cardapio.valor_unitarioExibicao}
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog widgetVar="dlgPrecoVar"
+                          id="dlgPreco"
+                          header="#{msg.rotuloLojistaCardapioEditarPreco}"
+                          resizable="false"
+                          modal="true"
+                          closeOnEscape="true"
+                          showEffect="explode"
+                          hideEffect="explode">
+
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="#{msg.rotuloPreco}:" />
+                        <p:inputText value="#{produtoBean.produtos.valor_unitario}" id="txtValorUnitario"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <p:commandButton value="#{msg.rotuloSair}" style="float:left;" action="#{produtoBean.atualizarCardapio()}" />
+                        <p:commandButton value="#{msg.rotuloSalvar}" style="float:right;" action="#{produtoBean.alterarPreco}" update="grMsg" />
+                    </h:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:include src="/importacoes.xhtml" />
+
+    <h:head>
+    </h:head> 
+
+    <h:body>
+        <div id="cabecalho" >
+            <h:form id="formTemplate">
+
+                <f:metadata>  
+                    <f:event type="preRenderView" listener="#{clienteBean.popularCliente()}" />  
+                </f:metadata>  
+
+                <p:panel>
+                    <p:panelGrid columns="5" style="width: 100%;" styleClass="semBorda"
+                                 columnClasses="colunaLogo,colunaPesquisar,colunaUsuario,colunaCarrinho,colunaLogout">
+                        <p:column>
+                            <p:commandLink action="#{produtoBean.atualizarPaginaComprarProduto()}">
+                                <p:graphicImage value="#{img.caminhoImagens}#{img.logoFuraFila}" width="100%"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column>
+                            <div align="center">
+                                <p:panelGrid columns="2"  style="width: 100%" columnClasses="colunaInternaPesquisar,colunaInternaBotaoPesquisar">
+                                    <p:column>
+                                        <p:inputText id="txtPesquisar" 
+                                                     style="width: 100%;height: 30px;font-size: 112%" 
+                                                     value="#{comprarProdutosBean.comprarProduto.pesquisa}">
+                                        </p:inputText>
+                                        <p:watermark value="#{msg.rotuloTemplateClienteTextoPesquisa} #{clienteBean.cliente.primeiroNome} #{msg.rotuloTemplateClienteContinuacaoTextoPesquisa}" for="txtPesquisar"  />
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandLink id="btnPesquisar" action="#{produtoBean.atualizarPaginaComprarProduto()}">
+                                            <p:graphicImage value="#{img.caminhoImagens}#{img.procurar}" width="100%" />
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:panelGrid>
+                            </div>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink action="#{navegacao.irPaginaPrincipalCliente()}">
+                                <p:graphicImage value="#{img.caminhoImagens}#{img.usuarios}" width="100%" />
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink action="#{navegacao.irPaginaCarrinhoCompras()}">
+                                <p:graphicImage value="#{img.caminhoImagens}#{img.carrinhoCompra}" width="100%" />
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandLink onclick="PF('wdgConfirma').show()">
+                                <p:graphicImage value="#{img.caminhoImagens}#{img.logout}" width="100%"  />
+                            </p:commandLink>
+                        </p:column>
+                    </p:panelGrid>
+
+                </p:panel>
+
+            </h:form>
+        </div>
+
+        <h:form>
+            <p:confirmDialog widgetVar="wdgConfirma" message="#{msg.mensagemTemCerteza}">
+                <p:commandButton value="#{msg.rotuloSim}" action="#{loginBean.logout()}"  ajax="false" />
+                <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgConfirma').hide()" />
+            </p:confirmDialog>
+        </h:form>
+
+        <div id="conteudo">
+            <ui:insert name="corpo" />
+        </div>
+        <div id="rodape">
+        </div>
+
+
+    </h:body>
+</html>

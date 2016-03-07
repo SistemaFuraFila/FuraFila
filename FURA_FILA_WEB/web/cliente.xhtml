@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formCliente">
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="Cadastro de Pessoa Física"  styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+                <h:panelGrid id="pnPrincipal" columns="1" style="width: 100%">
+                    <p:messages id="msgCliente"/>
+
+                    <p:fieldset legend="#{msg.tituloClienteDadosBasicos}" styleClass="conteinerCliente">
+                        <h:panelGrid columns="1" style="width: 100%" >
+                            <h:panelGroup >
+                                <p:inputText id="txtNome" 
+                                             value="#{clienteBean.cliente.nome}" 
+                                             style="width: 100.2%;"
+                                             required="true"
+                                             requiredMessage="#{msg.mensagemNomeVazio}"
+                                             styleClass="camposObrigatorio"/>
+                                <p:watermark for="txtNome" value="#{msg.rotuloNomeCompleto}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="3" styleClass="panelGridCliente">
+                            <h:panelGroup>
+                                <p:calendar id="txtDataNascimento" 
+                                            locale="pt_BR" 
+                                            pattern="dd/MM/yyyy" 
+                                            mask="true" 
+                                            value="#{clienteBean.cliente.dataNascimento}"
+                                            required="true"
+                                            requiredMessage="#{msg.mensagemDataVazia}"
+                                            validator="validarIdade"/>
+                                <p:watermark for="txtDataNascimento" value="#{msg.rotuloDataNascimento}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:selectOneMenu id="cbSexo"  
+                                                 value="#{clienteBean.cliente.sexo}" 
+                                                 style="width: 240px" 
+                                                 required="true"
+                                                 requiredMessage="#{msg.mensagemSexoVazia}">
+                                    <f:selectItem itemLabel="#{msg.rotuloSelecione}" itemValue="" />
+                                    <f:selectItem itemLabel="#{msg.rotuloMasculino}" itemValue="#{msg.rotuloOpcaoMasculino}" />
+                                    <f:selectItem itemLabel="#{msg.rotuloFeminino}"  itemValue="#{msg.rotuloOpcaoFeminino}" />
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputMask id="txtCpf" 
+                                             mask="999.999.999-99" 
+                                             value="#{clienteBean.cliente.cpfFormatado}" 
+                                             required="true"
+                                             requiredMessage="#{msg.mensagemCpfVazia}"
+                                             validator="validarCPF">
+                                </p:inputMask>
+                                <p:watermark for="txtCpf" value="#{msg.rotuloCpf}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="1" style="width: 100%" >
+                            <h:panelGroup>
+                                <p:inputText id="txtEmail" value="#{clienteBean.cliente.email}" 
+                                             styleClass="campoUnicoCliente"
+                                             required="true"
+                                             requiredMessage="O campo Email não pode estar vazio"
+                                             validator="validarEmail" >
+                                </p:inputText>
+                                <p:watermark for="txtEmail" value="#{msg.rotuloEmail}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="3" styleClass="panelGridCliente">
+                            <h:panelGroup>
+                                <p:inputMask id="txtTelRes" 
+                                             mask="(99)9999-9999" 
+                                             value="#{clienteBean.cliente.tel_resFormatado}"
+                                             required="true"
+                                             requiredMessage="#{msg.mensagemTelResVazia}"/>
+                                <p:watermark for="txtTelRes" value="#{msg.rotuloDDDTelRes}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputMask id="txtCel" mask="(99)99999-9999" value="#{clienteBean.cliente.celularFormatado}"/>
+                                <p:watermark for="txtCel" value="#{msg.rotuloDDDCelular}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputMask id="txtTelCom" mask="(99)9999-9999" value="#{clienteBean.cliente.tel_comFormatado}"/>
+                                <p:watermark for="txtTelCom" value="#{msg.rotuloDDDTelCom}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="#{msg.tituloClienteUsuario}" styleClass="conteinerCliente">
+                        <h:panelGrid columns="3" styleClass="panelGridCliente">
+                            <h:panelGroup>
+                                <p:inputText id="txtUsuario" 
+                                             value="#{clienteBean.cliente.login.usuario}"
+                                             required="true"
+                                             requiredMessage="#{msg.mensagemUsuarioVazia}"/>
+                                <p:watermark for="txtUsuario" value="#{msg.rotuloUsuario}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:password id="txtSenha" value="#{clienteBean.cliente.login.senha}"
+                                            match="txtConfSenha" 
+                                            feedback="true"
+                                            promptLabel="#{msg.rotuloDigiteSenha}"
+                                            strongLabel="#{msg.rotuloSenhaForte}"
+                                            goodLabel=  "#{msg.rotuloSenhaBoa}"
+                                            weakLabel=  "#{msg.rotuloSenhaFraca}"
+                                            validatorMessage="#{msg.mensagemSenhasNaoConferem}"
+                                            required="true"
+                                            requiredMessage="#{msg.mensagemSenhaVazia}"/>
+                                <p:watermark for="txtSenha" value="#{msg.rotuloSenha}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:password id="txtConfSenha" 
+                                            value="#{clienteBean.cliente.login.senha}"
+                                            required="true"
+                                            requiredMessage="#{msg.mensagemConfirmarSenhaVazia}"/>
+                                <p:watermark for="txtConfSenha" value="#{msg.rotuloConfirmarSenha}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="#{msg.tituloClienteEndereco}" styleClass="conteinerCliente">
+                        <h:panelGrid columns="3" styleClass="panelGridCliente">
+                            <h:panelGroup>
+                                <p:inputMask id="txtCep" 
+                                             mask="99999-999" 
+                                             value="#{clienteBean.cliente.logradouro.nroCepFormatado}"
+                                             required="true"
+                                             requiredMessage="#{msg.mensagemCepVazia}" >
+                                    <p:ajax event="blur" update="pnEndereco msgCliente" listener="#{clienteBean.procurarCep()}" />
+                                </p:inputMask>
+                                <p:watermark for="txtCep" value="#{msg.rotuloCEP}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputText id="txtComplemento" value="#{clienteBean.cliente.complemento}"/>
+                                <p:watermark for="txtComplemento" value="#{msg.rotuloComplemento}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputText id="txtNro" value="#{clienteBean.cliente.nroCasa}"/>
+                                <p:watermark for="txtNro" value="#{msg.rotuloNumero}" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <p:outputPanel id="pnEndereco">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:panelGroup>
+                                    <p:inputText id="txtLogradouro" 
+                                                 value="#{clienteBean.cliente.logradouro.logradouroFormatado}" 
+                                                 styleClass="campoUnicoCliente" 
+                                                 disabled="true" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                <h:panelGroup>
+                                    <p:inputText id="txtBairro" value="#{clienteBean.cliente.logradouro.bairro.desc_bairro}" disabled="true"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtCidade" value="#{clienteBean.cliente.logradouro.bairro.cidade.desc_cidade}" disabled="true"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtEstado" value="#{clienteBean.cliente.logradouro.bairro.cidade.uf.sigla_uf}" disabled="true"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:fieldset>
+                </h:panelGrid>
+
+                <h:panelGrid columns="1" style="width: 100%">
+                    <p:commandButton value="#{msg.rotuloCadastrar}"
+                                     actionListener="#{clienteBean.cadastrarCliente}"
+                                     action="#{loginBean.logarSe()}"
+                                     update=":formCliente:msgCliente"
+                                     validateClient="true"
+                                     ajax="false"
+                                     style="float: right">
+                        <f:setPropertyActionListener target="#{loginBean.login}" value="#{clienteBean.cliente.login}" />
+                    </p:commandButton>
+                </h:panelGrid>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

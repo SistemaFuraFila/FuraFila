@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    
+    <h:head>
+
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+
+            <h:body>
+                <h:form id="formMenuSuperior" >
+                    
+                    <p:panel  id="pnOpcoes">
+                        <p:panelGrid id="pnMenuSuperior">
+
+                            <p:column>
+                                <p:inputText id="txtPesquisar" />
+                                <p:watermark for="txtPesquisar" value="Digite aqui a sua busca" />
+                            </p:column>
+                            <p:column>
+                                <p:graphicImage value="#{prototipoBean.imagemCarrinho}" id="imgCardapio" onmouseover="abrirDialog()" />
+                                <p:dialog id="dlgCarrinho"
+                                          widgetVar="wdgCarrinho"
+                                          closable="true"
+                                          position="right top"
+                                          resizable="false"
+                                          closeOnEscape="true"
+                                          style="margin-top: 95px">
+
+                                    <p:dataTable id="dgvCarrinho" value="#{prototipoBean.lstCarrinho}" var="carrinho" style="width: 500px" >
+
+                                        <p:column headerText="PRODUTO">
+                                            #{carrinho.produto}
+                                        </p:column>
+                                        <p:column headerText="PREÇO">
+                                            #{carrinho.vlUnitarioFormatado}
+                                        </p:column>
+                                        <p:column headerText="QUANTIDADE">
+                                            #{carrinho.qtdProdutos}
+                                            <f:facet name="footer">
+                                                <p:outputLabel value="Total:" />
+                                            </f:facet>
+                                        </p:column>
+                                        <p:column headerText="SUBTOTAL">
+                                            #{carrinho.vlSubTotalFormatado}
+                                            <f:facet name="footer">
+                                                <p:outputLabel value="#{carrinho.vlTotalFormatado}" />
+                                            </f:facet>
+
+                                        </p:column>
+                                    </p:dataTable>  
+                                </p:dialog>
+
+                            </p:column>
+
+                        </p:panelGrid>
+
+                    </p:panel>
+
+                </h:form >
+
+                <p:sticky target="formMenuSuperior" />
+
+                <h:form id="formProdutos" onclick="fecharDialog();">
+
+                    <p:growl id="grProduto" showDetail="true" life="5000" />
+                    <h:panelGrid columns="1" width="100%">
+                        <p:dataGrid value="#{prototipoBean.lstPrototipo}" var="prototipo" columns="3" layout="grid"  >
+
+                            <p:column id="colunaProduto">
+                                <div style="width: 300px; margin-left: 5%" align="center" >
+                                    <p:panel  >
+                                        <h:panelGrid columns="1" style="text-align: center"  >
+                                            <p:graphicImage value="#{prototipo.imagem}" style="margin: 5px" width="100px" height="100px" />
+                                            <p:outputLabel value="#{prototipo.produto}" />
+                                            <p:outputLabel value="#{prototipo.vlUnitarioFormatado}" />
+
+                                            <h:panelGrid columns="3">
+                                                <p:commandLink >
+                                                    <p:graphicImage value="/resources/add_.png" styleClass="botoesAdicionarSubtr" />
+                                                    <p:ajax listener="#{prototipoBean.somarSubTotalQtd(prototipo)}" event="click" update="txtQtdProdutos outpnSubTotal"  />
+                                                </p:commandLink>
+
+                                                <p:inputText value="#{prototipo.qtdProdutos}" id="txtQtdProdutos" style="width: 100px;text-align: right">
+                                                    <p:ajax event="keyup" listener="#{prototipoBean.manipularSubTotal(prototipo)}"  update="txtQtdProdutos outpnSubTotal" />
+                                                </p:inputText>
+
+                                                <p:commandLink>
+                                                    <p:graphicImage value="/resources/subtract_.png" styleClass="botoesAdicionarSubtr"  />
+                                                    <p:ajax listener="#{prototipoBean.subtrairSubTotalQtd(prototipo)}" event="click" update="txtQtdProdutos outpnSubTotal"  />
+                                                </p:commandLink>
+
+                                            </h:panelGrid>
+
+                                            <p:outputPanel id="outpnSubTotal">
+                                                <p:outputLabel value="#{prototipo.vlSubTotalFormatado}" />
+                                            </p:outputPanel>
+                                        </h:panelGrid>
+
+                                        <f:facet name="footer">
+                                            <div style="text-align: center">
+                                                <p:commandButton value="Adicionar ao Carrinho" 
+                                                                 actionListener="#{prototipoBean.adicionarCarrinho(prototipo)}" 
+                                                                 update=":formMenuSuperior:pnMenuSuperior :formProdutos" >
+                                                </p:commandButton>
+                                            </div>
+                                        </f:facet>
+
+                                    </p:panel>
+                                </div>
+                            </p:column>
+                        </p:dataGrid>
+                    </h:panelGrid>
+                </h:form>
+
+            </h:body>
+
+            <f:verbatim>
+
+                <script>
+
+                    window.onload = function () {
+                        PF('wgdFiltro').show();
+                    }
+
+                </script>
+
+            </f:verbatim>
+        </ui:define>
+    </ui:composition>
+</html>

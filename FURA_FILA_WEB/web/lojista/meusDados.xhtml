@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+
+            <h:form enctype="multipart/form-data">
+
+                <f:metadata>  
+                    <f:event type="preRenderView" listener="#{estabelecimentoBean.listarInfoEstabelecimento()}" />  
+                </f:metadata>  
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="#{msg.rotuloLojistaSubMenuMeusDados}" styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+                <p:fieldset legend="#{msg.rotuloImagem}" >
+                    <div align="center">
+                        <div align="center">
+                            <p:graphicImage id="giImagem" 
+                                            value="#{estabelecimentoBean.estabelecimento.imagem.imagemVisualizar_2}" cache="false" styleClass="imagem" >
+                            </p:graphicImage>
+                        </div>
+                        <div align="center">
+                            <p:fileUpload 
+                                mode="advanced" 
+                                dragDropSupport="false"
+                                update="giImagem"
+                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                label="#{msg.rotuloEscolherImagem}"
+                                uploadLabel="#{msg.rotuloCarregar}"
+                                cancelLabel="#{msg.rotuloCancelar}"
+                                fileUploadListener="#{estabelecimentoBean.carregar}"/>
+                        </div>
+                    </div>
+                </p:fieldset>
+
+                <p:fieldset legend="#{msg.rotuloEstabelecimentoDadosBasicos}">
+
+                    <h:panelGrid columns="1" style="width: 100%" >
+                        <p:inputText id="txtRazaoSocial" 
+                                     style="width: 100%"
+                                     value="#{estabelecimentoBean.estabelecimento.razao_social}"/>
+                        <p:watermark for="txtRazaoSocial" value="#{msg.rotuloRazaoSocial}" />
+
+                        <p:inputText id="txtEmailEstabelecimento" 
+                                     style="width: 100%"
+                                     value="#{estabelecimentoBean.estabelecimento.email}"/>
+                        <p:watermark for="txtEmailEstabelecimento" value="#{msg.rotuloEmail}" />
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" style="width: 70%" >
+                        <h:panelGroup>
+                            <p:inputMask id="txtCNPJ" 
+                                         mask="99.999.999/9999-99" 
+                                         value="#{estabelecimentoBean.estabelecimento.cnpjFormatado}"/>
+                            <p:watermark for="txtCNPJ" value="#{msg.rotuloCNPJ}" />
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:inputText id="txtInscricaoEstadual"
+                                         value="#{estabelecimentoBean.estabelecimento.inscricao_estadual}"/>
+                            <p:watermark for="txtInscricaoEstadual" value="#{msg.rotuloIE}" />
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <h:panelGrid columns="1" style="width: 100%">
+                    <p:commandButton value="#{msg.rotuloSalvar}"
+                                     actionListener="#{estabelecimentoBean.alterar}"
+                                     ajax="false"
+                                     style="float: right"/>
+                </h:panelGrid>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

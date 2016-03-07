@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head></h:head>
+
+
+    <h:form id="formProduto" enctype="multipart/form-data">
+        <p:growl id="grMsg" showDetail="true" life="5000"  />
+        <h:panelGrid columns="2">
+            <p:fieldset legend="#{msg.rotuloProduto}">
+                <h:panelGrid columns="2">
+
+                    <f:metadata>  
+                        <f:event type="preRenderView" listener="#{produtoBean.popularTipoProduto()}" />  
+                    </f:metadata> 
+
+                    <p:inputText id="txtProduto" value="#{produtoBean.produtos.produto_desc}" >
+                    </p:inputText>
+                    <p:watermark for="txtProduto" value="#{msg.rotuloProduto}" />
+                    
+                    <p:inputText id="txtQtdMinima" value="#{produtoBean.produtos.qtdMinima}"/>
+                    <p:watermark for="txtQtdMinima" value="#{msg.rotuloLojistaEstoqueMinimo}" />
+
+                    <p:selectOneMenu id="cbTipoProduto" value="#{produtoBean.produtos.tipoProduto.id_tipo_produto}" style="width: 100%" >
+                        <f:selectItem itemLabel="#{msg.rotuloSelecione}"/>
+                        <f:selectItems var="tipoProduto" 
+                                       itemLabel="#{tipoProduto.tipo_produto_desc}" 
+                                       itemValue="#{tipoProduto.id_tipo_produto}" 
+                                       value="#{produtoBean.lstTipoProduto}" />
+                    </p:selectOneMenu>
+                    <p:watermark for="cbTipoProduto"  value="#{msg.rotuloTipoProduto}" />
+
+                </h:panelGrid>
+            </p:fieldset>
+
+            <p:fieldset legend="#{msg.rotuloImagem}" style="width: 95%">
+                <div align="center">
+                    <div align="center">
+                        <p:graphicImage id="foto" value="#{produtoBean.produtos.imagem.imagemVisualizar_2}" cache="false" styleClass="imagem" />
+                    </div>
+                    <div align="center">
+                        <p:fileUpload  style="overflow: hidden;width: 105%" 
+                                       label="#{msg.rotuloEscolherImagem}"
+                                       cancelLabel="#{msg.rotuloCancelar}"
+                                       uploadLabel="#{msg.rotuloCarregar}"
+                                       fileUploadListener="#{produtoBean.carregarImagem}"
+                                       update="foto"/>
+                    </div>
+                </div>
+
+            </p:fieldset>
+        </h:panelGrid>
+
+        <div align="center">
+            <p:fieldset legend="#{msg.rotuloDimensoes}" style="width: 70%">
+
+                <h:panelGrid columns="3">
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:outputLabel value="#{msg.rotuloAltura}:" />
+                            <p:slider for="txtAltura" maxValue="1000" style="width: 90%"/>
+                            <p:inputText id="txtAltura" value="#{produtoBean.produtos.dimensao.altura}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:outputLabel value="#{msg.rotuloLargura}:" />
+                            <p:slider for="txtLargura" maxValue="1000" style="width: 90%" />
+                            <p:inputText id="txtLargura" value="#{produtoBean.produtos.dimensao.largura}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:panelGrid>
+                            <p:outputLabel value="#{msg.rotuloProfundidade}:" />
+                            <p:slider for="txtProfundidade" maxValue="1000" style="width: 90%" />
+                            <p:inputText id="txtProfundidade" value="#{produtoBean.produtos.dimensao.profundidade}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+            </p:fieldset>
+        </div>
+
+        <h:panelGrid columns="2" style="width: 100%">
+            <p:commandButton value="#{msg.rotuloSair}" style="float:left; width: 50%" onclick="PF('wdgProduto').hide()" />
+            <p:commandButton value="#{msg.rotuloSalvar}" style="float:right;width: 50%" actionListener="#{produtoBean.gravar}" update=":formProduto :formPrincipal:dgvEstoque" oncomplete="PF('wdgProduto').hide()" />
+        </h:panelGrid>
+
+    </h:form>
+</html>

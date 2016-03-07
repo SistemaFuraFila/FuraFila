@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>TITULO</title>
+    </h:head>
+
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form>
+
+                <p:dataTable id="dgvPedidos"
+                             value="#{consultarPedidoBean.lstPedidos}"
+                             var="pedido"
+                             selectionMode="single"
+                             selection="#{consultarPedidoBean.comanda}"
+                             rowKey="#{pedido.cdComanda}"
+                             paginator="true"
+                             rows="8"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             emptyMessage="Sem registros" >
+                    
+                    <p:ajax event="rowSelect" update="btnVisualizar"   listener="#{consultarPedidoBean.onRowSelect}" />
+                    <p:ajax event="rowUnselect" update="btnVisualizar" listener="#{consultarPedidoBean.onRowUnselect}" />
+                    
+                    <p:column headerText="COMANDA"
+                              filterBy="#{pedido.cdComanda}"
+                              filterMatchMode="contains">
+
+                        #{pedido.cdComanda}
+
+                    </p:column>
+
+                    <p:column headerText="STATUS">
+
+                        #{pedido.statusFormatado}
+
+                    </p:column>
+
+                    <p:column headerText="TOTAL DE COMPRA">
+
+                        #{pedido.totalCompraFormatada}
+
+                    </p:column>
+
+                    <p:column headerText="SERVIÇO"
+                              filterBy="#{pedido.servico.servico}"
+                              filterMatchMode="contains">
+
+                        #{pedido.servico.servico}
+
+                    </p:column>
+
+                    <p:column headerText="FORMA DE PAGTO">
+
+                        #{pedido.formaPgto.formaPagto}
+
+                    </p:column>
+                    
+                    <f:facet name="footer">
+
+                        <p:commandButton id="btnVisualizar"
+                                         value="VISUALIZAR"
+                                         process="dgvPedidos"
+                                         update=":formVisualizarPedido:dlgPedido"
+                                         oncomplete="PF('wgtPedido').show()"
+                                         actionListener="#{consultarPedidoBean.detalharPedido()}"
+                                         disabled="#{consultarPedidoBean.flgBtnVisualizar}"/>
+
+                    </f:facet>
+
+                </p:dataTable>
+            </h:form>
+            <h:form id="formVisualizarPedido">
+
+                <p:dialog id="dlgPedido"
+                          header="VISUALIZAR PEDIDO"
+                          widgetVar="wgtPedido"
+                          modal="true"
+                          resizable="false"
+                          width="50%">
+
+                    <p:panelGrid columns="2"
+                                 style="width: 100%">
+
+                        <p:outputLabel value="Comanda:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.cdComanda}" />
+
+                        <p:outputLabel value="Serviço:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.servico.servico}" />
+
+                        <p:outputLabel value="Data de Venda:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.dataVenda}"/>
+
+                        <p:outputLabel value="Data de confirmação:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.dataConfirmacao}"/>
+
+                        <p:outputLabel value="Quantidade:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.qtdTotal}" />
+
+                        <p:outputLabel value="Total" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.totalCompraFormatada}" />
+
+                        <p:outputLabel value="Forma de Pagto:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.formaPgto.formaPagto}" />
+
+                        <p:outputLabel value="Status:" />
+                        <p:outputLabel value="#{consultarPedidoBean.pedidos.comanda.statusFormatado}" />
+
+                    </p:panelGrid>
+
+                    <h:panelGrid>
+
+                        <f:facet name="header">
+
+                            <p:outputLabel value="Produtos:" />
+
+                        </f:facet>
+
+                        <p:dataTable value="#{consultarPedidoBean.pedidos.produtos}"
+                                     var="produto"
+                                     rows="5" >
+
+                            <p:column headerText="PRODUTO">
+
+                                <p:outputLabel value="#{produto.produto}" />
+
+                            </p:column>
+
+                            <p:column headerText="TIPO DE PRODUTO">
+
+                                <p:outputLabel value="#{produto.tipoProduto.tipoProduto}" />
+
+                            </p:column>
+
+                            <p:column headerText="PREÇO">
+
+                                <p:outputLabel value="#{produto.valorUnitFormatado}" />
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </h:panelGrid>
+
+                </p:dialog>
+
+            </h:form>
+
+        </ui:define>
+
+    </ui:composition>
+
+</html>

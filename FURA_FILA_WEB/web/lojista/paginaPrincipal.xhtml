@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form>
+                <div style="margin-top: 100px" align="center">
+                    <p:panel style="width: 800px" >
+                        <p:graphicImage 
+                            value="#{estabelecimentoBean.estabelecimentoLoginSessao.estabelecimento.imagem.imagemVisualizar}" 
+                            width="60%" height="60%" >
+                            <f:param name="imagem" value="#{estabelecimentoBean.estabelecimentoLoginSessao.estabelecimento.imagem.imagem}" />
+                        </p:graphicImage>
+                        <h:panelGrid columns="6">
+                            <p:outputLabel value="Empresa:" />
+                            <p:outputLabel value="#{estabelecimentoBean.estabelecimentoLoginSessao.estabelecimento.razao_social}"  style="font-weight: bold" />
+                            <h:panelGroup style="width: 400px"  />
+                            <p:outputLabel value="Login:" />
+                            <p:outputLabel value="#{estabelecimentoBean.estabelecimentoLoginSessao.login.usuario}" style="font-weight: bold" />
+                        </h:panelGrid>
+
+                    </p:panel>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

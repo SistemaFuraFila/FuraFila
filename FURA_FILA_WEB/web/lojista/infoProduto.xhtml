@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head></h:head>
+
+    <f:loadBundle basename="furaFila.utils.PageConstants"  var="msg"/>
+    
+    <h:form>
+
+        <p:panelGrid columns="2">
+            
+            <f:facet name="header" >
+                <h:outputLabel value="#{msg.rotuloProduto}" />
+            </f:facet>
+            
+            <p:outputLabel value="#{msg.rotuloProduto}:" />
+            <p:inputText value="#{estoqueBean.infoEstoqueProduto.produto.produto}"/>
+            
+            <p:outputLabel value="#{msg.rotuloEstoqueMaximo}:" />
+            <p:inputText value="#{estoqueBean.infoEstoqueProduto.produto.qtdMaxima}" />
+            
+            <p:outputLabel value="#{msg.rotuloEstoqueMinimo}:" />
+            <p:inputText value="#{estoqueBean.infoEstoqueProduto.produto.qtdMinima}" />
+            
+            <p:outputLabel value="#{msg.rotuloQtdeEstoque}:" />
+            <p:inputText value="#{estoqueBean.infoEstoqueProduto.qtdEstoque}" />
+            
+            <p:outputLabel value="#{msg.rotuloTipoProduto}:" />
+            <p:selectOneMenu value="#{estoqueBean.infoEstoqueProduto.produto.tipoProduto.cdTipoProduto}" style="width:100%" >
+                <f:selectItems var="tipoProduto" 
+                               itemLabel="#{tipoProduto.tipoProduto}" 
+                               itemValue="#{tipoProduto.cdTipoProduto}" 
+                               value="#{estoqueBean.lstTipoProduto}" />
+            </p:selectOneMenu>
+            
+            <f:facet name="footer">
+                <p:commandButton value="#{msg.rotuloGravar}" style="width:100%" actionListener="#{produtoBean.gravar()}" ajax="false" />
+            </f:facet>
+            
+        </p:panelGrid>
+
+    </h:form>
+
+
+</html>

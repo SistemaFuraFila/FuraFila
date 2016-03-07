@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    					http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/security
+						http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+ 
+    <beans:bean id="navigator" name="navigator" class="navegacao.Navigator" scope="session">
+    </beans:bean>
+    
+    <beans:bean id="login" name="login" class="furaFila.mvc.login.bean.LoginBean" scope="prototype">
+        <beans:property name="authenticationManager" ref="authenticationManager"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="entregadores" name="entregadores" class="furaFila.mvc.login.bean.EntregadoresBean" scope="prototype">
+        <beans:property name="iLoginService" value="furaFila.mvc.login.service.LoginService" ></beans:property>
+    </beans:bean>
+    
+</beans:beans>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <application>
+        <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+    </application>
+
+    <!-- ======================== ADMINISTRADOR ================================ -->
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>*</from-view-id>
+
+        <navigation-case>
+            <from-action>#{loginBean.logarSe()}</from-action>
+            <from-outcome>A</from-outcome>
+            <to-view-id>/administrador/paginaPrincipal.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+    
+    <!-- ======================== LOJISTA ================================ -->
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>/*</from-view-id>
+		
+        <navigation-case>
+            <from-action>#{loginBean.logarSe()}</from-action>
+            <from-outcome>L</from-outcome>
+            <to-view-id>/lojista/paginaPrincipal.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- ========================CLIENTE================================ -->
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>/*</from-view-id>
+		
+        <navigation-case>
+            <from-action>#{loginBean.logarSe()}</from-action>
+            <from-outcome>C</from-outcome>
+            <to-view-id>/cliente/paginaPrincipal.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+
+
+    <!-- ========================ENTREGADOR================================ -->
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>/*</from-view-id>
+		
+        <navigation-case>
+            <from-action>#{loginBean.logarSe()}</from-action>
+            <from-outcome>E</from-outcome>
+            <to-view-id>/entregador/paginaPrincipal.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+    
+    <!--=============================================================-->
+    <navigation-rule>
+        <display-name>*</display-name>
+        <from-view-id>*</from-view-id>
+		
+        <navigation-case>
+            <from-action>#{loginBean.logout()}</from-action>
+            <from-outcome>logout</from-outcome>
+            <to-view-id>/logoff.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+    </navigation-rule>
+
+    <converter>
+        <converter-id>converter.CpfConverter</converter-id>
+        <converter-class>furaFila.converters.CpfConverter</converter-class>
+    </converter>
+    
+    <validator>
+        <validator-id>converter.CpfValidator</validator-id>
+        <validator-class>furaFila.validadores.ValidarCPF</validator-class>
+    </validator>
+    
+    <validator>
+        <validator-id>converter.EmailValidator</validator-id>
+        <validator-class>furaFila.validadores.ValidarEmail</validator-class>
+    </validator>
+    
+</faces-config>

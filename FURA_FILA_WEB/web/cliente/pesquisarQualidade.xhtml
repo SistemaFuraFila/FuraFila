@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:include src="/importacoes.xhtml" />
+
+    <h:head>
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:body>
+                <h:form id="formPrincipal">
+
+
+                    <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                        <h:outputLabel value="Pesquisa de qualidade" styleClass="labelTitulo" />
+                    </div>
+                    <p:separator styleClass="separador" />
+
+                    <p:panel>
+                        <p:outputLabel value="01) De modo geral, qual seu nível de satisfação em relação a utlização do FURA FILA?" />
+                        <p:selectOneRadio layout="grid" columns="1">
+                            <f:selectItem itemLabel="Muito Satisfeito" />
+                            <f:selectItem itemLabel="Satisfeito" />
+                            <f:selectItem itemLabel="Indiferente" />
+                            <f:selectItem itemLabel="Insatisfeito" />
+                        </p:selectOneRadio>
+                        <p:separator styleClass="separador" />
+
+                        <p:outputLabel value="02) Já utilizou anteriormente nossos serviços?" />
+                        <p:selectOneRadio layout="grid" columns="1">
+                            <f:selectItem itemLabel="Sim" />
+                            <f:selectItem itemLabel="Não" />
+                        </p:selectOneRadio>
+                        <p:separator styleClass="separador" />
+
+                        <p:outputLabel value="03) Escolheu o FURA FILA por:" />
+                        <p:selectOneRadio layout="grid" columns="1">
+                            <f:selectItem itemLabel="Indicação de Família / amigos" />
+                            <f:selectItem itemLabel="Qualidade de serviços" />
+                            <f:selectItem itemLabel="Propagando / Marketing" />
+                            <f:selectItem itemLabel="Produtos e preços" />
+                            <f:selectItem itemLabel="Outro: "/>
+                        </p:selectOneRadio>
+                        <p:inputText widgetVar="wgdOutro" />
+                        <p:separator styleClass="separador" />
+
+                        <p:outputLabel value="04 ) Gostou da experiência em nosso site ?" />
+                        <p:selectOneRadio layout="grid" columns="1">
+                            <f:selectItem itemLabel="Sim" />
+                            <f:selectItem itemLabel="Não. Poderia nos informar o que faltou em nosso serviço isso nos ajudará a melhor o FURA FILA pra você" />
+                        </p:selectOneRadio>
+                        <p:inputTextarea />
+                        <p:separator styleClass="separador" />
+
+                        <p:outputLabel value="05) Gostou das localizações dos Locker atualmente?" />
+                        <p:selectOneRadio layout="grid" columns="1">
+                            <f:selectItem itemLabel="Sim" />
+                            <f:selectItem itemLabel="Não. Se não poderia sugerir um local ou região onde gostaria que houvesse um Locker?" />
+                        </p:selectOneRadio>
+                        <p:inputTextarea />
+                        <p:separator styleClass="separador" />
+                        <div align="left">
+                            <p:commandButton value="Enviar" />
+                        </div>
+
+                        <br/>
+                        <p:outputLabel value="Muito Obrigado a sua opinião é muito importante para nós. Até a Próxima." />
+                        <br/>
+                        <p:outputLabel value="Atenciosamente equipe FURA FILA." />
+                    </p:panel>
+                </h:form>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+</html>

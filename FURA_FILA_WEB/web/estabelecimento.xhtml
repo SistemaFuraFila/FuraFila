@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formEstabelecimento">
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="Cadastro de Pessoa Jurídica"  styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+                <p:messages id="grEstabelecimento" />
+                <h:panelGrid id="pnPrincipalEstabelecimento" columns="1" style="width: 100%">
+
+                    <p:fieldset legend="#{msg.rotuloEstabelecimentoDadosBasicos}">
+                        <h:panelGrid columns="1" style="width: 100%" >
+                            <p:inputText id="txtRazaoSocial" 
+                                         style="width: 100%"
+                                         value="#{estabelecimentoBean.estabelecimento.razao_social}"
+                                         required="true"
+                                         requiredMessage="O campo Razão Social não pode estar vazio"/>
+                            <p:watermark for="txtRazaoSocial" value="#{msg.rotuloRazaoSocial}*"  />
+
+                            <p:inputText id="txtEmailEstabelecimento" 
+                                         style="width: 100%"
+                                         value="#{estabelecimentoBean.estabelecimento.email}"
+                                         required="true"
+                                         requiredMessage="O campo Email não pode estar vazio"
+                                         validator="validarEmail"/>
+                            <p:watermark for="txtEmailEstabelecimento" value="#{msg.rotuloEmail}*" />
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" style="width: 70%" >
+                            <h:panelGroup>
+                                <p:inputMask id="txtCNPJ" 
+                                             mask="99.999.999/9999-99" 
+                                             value="#{estabelecimentoBean.estabelecimento.cnpjFormatado}"
+                                             required="true"
+                                             requiredMessage="O campo CNPJ não pode estar vazio"/>
+                                <p:watermark for="txtCNPJ" value="#{msg.rotuloCNPJ}*" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:inputText id="txtInscricaoEstadual"
+                                             value="#{estabelecimentoBean.estabelecimento.inscricao_estadual}"
+                                             required="true"
+                                             requiredMessage="O campo Inscrição Estadual não pode estar vazio"/>
+                                <p:watermark for="txtInscricaoEstadual" value="#{msg.rotuloIE}*" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="#{msg.rotuloEstabelecimentoDadosAcesso}">
+                        <h:panelGrid columns="3" styleClass="panelGridCliente">
+                            <h:panelGroup>
+                                <p:inputText id="txtUsuarioEstabelecimento" 
+                                             value="#{estabelecimentoBean.estabelecimentoLogin.login.usuario}"
+                                             required="true"
+                                             requiredMessage="O campo Usuário não pode estar vazio"/>
+                                <p:watermark for="txtUsuarioEstabelecimento" value="#{msg.rotuloUsuario}*" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:password id="txtSenhaEstabelecimento" 
+                                            value="#{estabelecimentoBean.estabelecimentoLogin.login.senha}"
+                                            match="txtConfSenhaEstabelecimento" 
+                                            feedback="true"
+                                            promptLabel="#{msg.rotuloDigiteSenha}"
+                                            strongLabel="#{msg.rotuloSenhaForte}"
+                                            goodLabel=  "#{msg.rotuloSenhaBoa}"
+                                            weakLabel=  "#{msg.rotuloSenhaFraca}"
+                                            required="true"
+                                            requiredMessage="O campo Senha não pode estar vazio"
+                                            validatorMessage="As senhas não conferem"/>
+                                <p:watermark for="txtSenhaEstabelecimento" value="#{msg.rotuloSenha}*" />
+                            </h:panelGroup>
+
+                            <h:panelGroup>
+                                <p:password id="txtConfSenhaEstabelecimento" 
+                                            value="#{estabelecimentoBean.estabelecimentoLogin.login.senha}"
+                                            required="true"
+                                            requiredMessage="O campo Confirmar Senha não pode estar vazio"
+                                            validatorMessage="As senhas não conferem"/>
+                                <p:watermark for="txtConfSenhaEstabelecimento" value="#{msg.rotuloConfirmarSenha}*" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <h:panelGrid columns="1" style="width: 100%">
+                        <p:commandButton value="#{msg.rotuloCadastrar}"
+                                         action="#{estabelecimentoBean.gravar()}"
+                                         validateClient="true"
+                                         ajax="false"
+                                         style="float: right"
+                                         update="grEstabelecimento">
+                            <p:resetInput target="formEstabelecimento" />
+                        </p:commandButton>
+                    </h:panelGrid>
+                </h:panelGrid>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

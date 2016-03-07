@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:composition template="../template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formPrincipal">
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="Tipo de Produto"  styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+                <p:growl id="grTipoProduto" showDetail="true" />
+                <div style="float: left;width: 80%">
+                    <p:dataTable id="tipoProdutoGrid"
+                                 widgetVar="tabelaTipoGrid"
+                                 var="tipoProduto"
+                                 selectionMode="single"
+                                 value="#{tipoProdutoBean.lstTipoProduto}"
+                                 selection="#{tipoProdutoBean.tipoProduto}"
+                                 rowKey="#{tipoProduto.id_tipo_produto}"
+                                 scrollable="true"
+                                 scrollHeight="550"
+                                 stickyHeader="true">
+
+                        <p:ajax event="rowSelect" update=":formPrincipal:btnEditar :formPrincipal:btnExcluir"     listener="#{tipoProdutoBean.habilitarBotoes}"/>
+                        <p:ajax event="rowUnselect" update=":formPrincipal:btnEditar :formPrincipal:btnExcluir"   listener="#{tipoProdutoBean.desabilitarBotoes}"/>
+
+                        <p:column headerText="#{msg.rotuloTemplateAdministadorTipoProduto}">
+                            #{tipoProduto.tipo_produto_desc}
+                        </p:column>
+
+                        <p:column headerText="#{msg.rotuloTipoProdutoAdministradorStatusTipoProduto}">
+                            #{tipoProduto.statusExibicao}
+                        </p:column>
+                    </p:dataTable>
+                </div>
+
+                <div style="float: right;width: 20%" align="center">
+                    <p:panel>
+
+                        <p:commandButton id="btnNovo"
+                                         value="#{msg.rotuloTipoProdutoAdministradorNovoTipoProduto}"
+                                         action="#{tipoProdutoBean.inicializarNovoTipoProduto()}"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnEditar"
+                                         value="#{msg.rotuloTipoProdutoAdministradorEditarTipoProduto}" 
+                                         action="#{navegacao.irNovoTipoProduto()}"
+                                         disabled="#{tipoProdutoBean.flgBotoes}"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnExcluir"
+                                         value="#{tipoProdutoBean.nomeBotaoAtivarDesativar()}"
+                                         process="tipoProdutoGrid"
+                                         oncomplete="PF('wgdConfirmar').show()"
+                                         disabled="#{tipoProdutoBean.flgBotoes}"
+                                         style="width: 100%"/>
+                    </p:panel>
+                </div>
+            </h:form>
+
+            
+            <!--
+                ====================================================================
+                ==================== MODAL PARA CONFIRMAÇÃO DE EXCLUSÃO ============
+                ====================================================================
+            -->
+
+            <h:form>
+                <p:confirmDialog widgetVar="wgdConfirmar"
+                                 message="#{msg.mensagemTemCerteza}">
+
+                    <h:panelGrid columns="2" style="width: 100%;text-align: center">
+                        <p:commandButton value="#{msg.rotuloSim}" 
+                                         action="#{tipoProdutoBean.alterarStatus()}"  />
+
+                        <p:commandButton value="#{msg.rotuloNao}"
+                                         oncomplete="PF('wgdConfirmar').hide()" />
+                    </h:panelGrid>
+
+                </p:confirmDialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

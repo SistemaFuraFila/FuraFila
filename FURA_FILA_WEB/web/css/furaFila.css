@@ -1,0 +1,99 @@
+/* 
+    Created on : 16/08/2015, 03:17:32
+    Author     : Wellington Gonçalves Pires
+*/
+
+.botoesAdicionarSubtr{
+
+    width: 30px;
+    height: 30px;
+
+}
+.conteinerCliente{
+    width: 97%
+}
+
+.campoUnicoCliente{
+    width: 100.2%
+}
+
+.panelGridCliente{
+    width: 105%;
+}
+
+.colunaLogo{
+    width: 1%;
+}
+
+.colunaPesquisar{
+    width: 3%;
+}
+
+.colunaUsuario{
+    width: 0.3%;
+}
+
+.colunaCarrinho{
+    width: 0.3%;
+}
+
+.colunaLogout{
+    width: 0.3%;
+}
+
+.semBorda tr, .semBorda td {
+    border: none !important;
+}
+
+.colunaInternaPesquisar{
+    width: 90%
+}
+.colunaInternaBotaoPesquisar{
+    width: 10%
+}
+.camposObrigatorio{
+    background-color: #FFFF99;
+}
+
+.labelTitulo{
+    font-size: 35px;
+    font-family: segoe ui, Arial, sans-serif;
+}
+
+.tituloPagina{
+    margin-top: 5px
+}
+
+.separador{
+    width:100%;
+    height:3px
+}
+
+.imagem{
+    width: 25%;
+    height: 25%
+}
+
+.ui-grid .ui-grid-row{
+    display:-webkit-box!important;
+    display:-moz-box !important;
+    display:-ms-flexbox !important;
+    display:-webkit-flex !important;
+    display:flex !important;
+    clear:both !important;
+    width: 100% !important;
+}
+.ui-spinner-input{
+    width: 87% !important;
+}
+
+.filtroEstabelecimento{
+    width: 50%;
+}
+.filtroPreco{
+    width: 50%;
+}
+.filtroAlfabeticamente{
+    width: 33.33%;
+}
+

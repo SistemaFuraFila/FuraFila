@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formCarrinho">
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="#{msg.rotuloTituloPaginaCarrinhoCompras}" styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+                <p:dataTable id="dgvCarrinho" value="#{comprarProdutosBean.lstCarrinho}" var="carrinho" stickyHeader="true">
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaEstabelecimento}">
+                        #{carrinho.pedidos.comanda.estabelecimento.razao_social}
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaProduto}">
+                        #{carrinho.pedidos.produto.produto_desc}
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaPreco}">
+                        <div style="text-align: right">
+                            #{carrinho.pedidos.produto.valor_unitarioExibicao}
+                        </div>
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaQtd}" >
+                        <p:spinner id="spQtd" value="#{carrinho.pedidos.qtd}" min="1">
+                            <p:ajax update="txtSubTotal" />
+                        </p:spinner>
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaSubtotal}">
+                        <div style="text-align: right">
+                            <p:outputLabel id="txtSubTotal" value="#{carrinho.pedidos.subTotalExibicao}" />
+                        </div>
+
+                        <f:facet name="footer">
+                            <p:outputPanel autoUpdate="true">
+                                <h:panelGrid columns="2" style="border: transparent">
+                                    <p:outputLabel value="#{msg.rotuloPaginaCarrinhoColunaTotal}" style="font-weight: bold"/>
+                                    <p:outputLabel value="#{comprarProdutosBean.totalFormatado}" />
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </f:facet>
+                    </p:column>
+                    <p:column headerText="#{msg.rotuloPaginaCarrinhoColunaExcluir}">
+                        <p:commandLink value="EXCLUIR" actionListener="#{comprarProdutosBean.deletarCarrinho(carrinho)}" update="dgvCarrinho :formCarrinho:btnFinalizar" />
+                    </p:column>
+                </p:dataTable>
+                <div style="float: right;width: 16.7%;height: 60px">
+                    <p:commandButton id="btnFinalizar" 
+                                     value="#{msg.rotuloPaginaCarrinhoFinalizaCompra}" 
+                                     style="width: 100%;height: 100%" 
+                                     disabled="#{comprarProdutosBean.lstCarrinho.size() == 0}"
+                                     action="#{comprarProdutosBean.finalizarPedido()}"/>
+                </div>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

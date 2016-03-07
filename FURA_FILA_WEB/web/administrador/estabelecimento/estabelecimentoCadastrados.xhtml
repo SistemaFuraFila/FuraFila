@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="../template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formPrincipal">
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="Estabelecimentos"  styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+                
+                <f:metadata>  
+                    <f:event type="preRenderView" listener="#{estabelecimentoBean.listarEstabelecimentos()}"/>  
+                </f:metadata>  
+
+                <p:dataTable value="#{estabelecimentoBean.lstEstabelecimentos}"
+                             var="estabelecimento"
+                             selectionMode="single"
+                             selection="#{estabelecimentoBean.estabelecimento}"
+                             rowKey="#{estabelecimento.id_estabelecimento}"
+                             emptyMessage="#{msg.rotuloSemRegistros}">
+
+                    <p:ajax event="rowSelect" oncomplete="PF('wdgEmpresa').show()" update=":formPrincipal:pnDadosEmpresa :formPrincipal:btnValidar :formPrincipal:btnRecusar">
+                        <f:setPropertyActionListener value="#{estabelecimento}" target="#{estabelecimentoBean.estabelecimento}" />
+                    </p:ajax>
+
+                    <p:column headerText="#{msg.rotuloRazaoSocial}">
+                        #{estabelecimento.razao_social}
+                    </p:column>
+
+                    <p:column headerText="#{msg.rotuloCNPJ}">
+                        #{estabelecimento.cnpjFormatado}
+                    </p:column>
+
+                    <p:column headerText="#{msg.rotuloStatus}">
+                        #{estabelecimento.statusFormatado}
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:dialog id="dlgEmpresa"
+                          widgetVar="wdgEmpresa"
+                          resizable="false"
+                          closeOnEscape="true"
+                          closable="false"
+                          modal="true">
+
+                    <p:fieldset legend="Dados da empresa">
+
+                        <p:outputPanel id="pnDadosEmpresa">
+                            <h:panelGrid columns="2" width="100%">
+                                <p:outputLabel value="#{msg.rotuloRazaoSocial}:" />
+                                <p:inputText value="#{estabelecimentoBean.estabelecimento.razao_social}" disabled="true" />
+                                <p:outputLabel value="#{msg.rotuloEmail}:" />
+                                <p:inputText value="#{estabelecimentoBean.estabelecimento.email}" disabled="true" />
+
+                                <p:outputLabel value="#{msg.rotuloCNPJ}:" />
+                                <p:inputText value="#{estabelecimentoBean.estabelecimento.cnpjFormatado}" disabled="true" />
+                                <p:outputLabel value="#{msg.rotuloIE}:" />
+                                <p:inputText value="#{estabelecimentoBean.estabelecimento.inscricao_estadual}" disabled="true" />
+                                <p:outputLabel value="#{msg.rotuloStatus}:" />
+                                <p:inputText value="#{estabelecimentoBean.estabelecimento.statusFormatado}" disabled="true" />
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <h:panelGrid columns="2" width="100%">
+                        <p:commandButton id="btnValidar"
+                                         value="#{msg.rotuloEmpresaAdministadorValidar}" 
+                                         style="width: 100%" 
+                                         onclick="PF('wdgValidar').show()"
+                                         disabled="#{estabelecimentoBean.estabelecimento.status}" />
+                        <p:commandButton id="btnRecusar"
+                                         value="#{msg.rotuloEmpresaAdministadorRecusar}" 
+                                         style="width: 100%" 
+                                         onclick="PF('wdgRecusar').show()"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:confirmDialog widgetVar="wdgValidar"
+                                 message="#{msg.mensagemTemCerteza}">
+                    <p:commandButton value="#{msg.rotuloSim}" action="#{estabelecimentoBean.ativarEmpresa()}" 
+                                     onstart="PF('wdgValidarCadastro').show()" 
+                                     oncomplete="PF('wdgValidarCadastro').hide()" 
+                                     onerror="PF('wdgValidarCadastro').hide()" />
+                    <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgValidar').hide()" />
+                </p:confirmDialog>
+
+                <p:confirmDialog widgetVar="wdgRecusar"
+                                 message="#{msg.mensagemTemCerteza}">
+                    <p:commandButton value="#{msg.rotuloSim}"   action="#{estabelecimentoBean.desativarEmpresa()}" />
+                    <p:commandButton value="#{msg.rotuloNao}"   onclick="PF('wdgRecusar').hide()" />
+                </p:confirmDialog>
+
+                <p:dialog widgetVar="wdgValidarCadastro" 
+                          modal="true" 
+                          resizable="false" 
+                          draggable="false" 
+                          closable="false" 
+                          closeOnEscape="false">
+                    <p:panel>
+                        Validando cadastro...
+                    </p:panel>
+                </p:dialog>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
+

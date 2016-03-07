@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+
+            <h:form id="formPaginaPrincipal" enctype="multipart/form-data" >
+
+                <p:fieldset legend="#{msg.rotuloPaginaPrincipalClienteMinhaConta}" style="height: 500px">
+                    <p:accordionPanel multiple="true" activeIndex="-1" >
+
+                        <p:tab title="#{msg.rotuloPaginaPrincipalClienteDadosPessoais}">
+                            <p:commandButton value="#{msg.rotuloPaginaPrincipalClienteMeusDadosPessoais}"
+                                             actionListener="#{clienteBean.carregarDados}"
+                                             onclick="PF('wgdDadosCadastrais').show();"/>
+                        </p:tab>
+
+                        <p:tab title="#{msg.rotuloPaginaPrincipalClienteMeusDadosAcesso}">
+                            <p:commandButton value="#{msg.rotuloPaginaPrincipalClienteMeusDadosAcesso}"
+                                             actionListener="#{clienteBean.carregarDados}"
+                                             onclick="PF('wgdDadosAcesso').show()" />
+                        </p:tab>
+
+                        <p:tab title="Pedidos">
+                            <p:commandButton value="Pedidos no Locker" action="#{navegacao.irPaginaPedidosLocker()}" />
+                        </p:tab>
+
+                        <p:tab title="Relatórios">
+                            <p:commandButton value="Lockers mais Próximos de você"
+                                             actionListener="#{lockerBean.gerarRelatorio}" ajax="false">
+                            </p:commandButton>
+                            <p:commandButton value="Estabelecimento que mais vendem"
+                                             actionListener="#{estabelecimentoBean.gerarRelatorio}" ajax="false">
+                            </p:commandButton>
+                        </p:tab>
+                        
+                    </p:accordionPanel>
+                </p:fieldset>
+
+
+                <p:dialog id="dlgDadosCadastrais"
+                          widgetVar="wgdDadosCadastrais"
+                          resizable="false"
+                          modal="true"
+                          draggable="false"
+                          width="75%">
+
+                    <p:outputPanel id="pnDadosCadastrais" autoUpdate="true">
+                        <p:fieldset legend="#{msg.rotuloImagem}" >
+                            <div align="center">
+                                <div align="center">
+                                    <p:graphicImage id="giImagem"
+                                                    value="#{clienteBean.cliente.imagem.imagemVisualizar_2}"
+                                                    cache="disabled"
+                                                    style="width: 15%;height: 15%"/>
+                                </div>
+                                <div align="center">
+                                    <p:fileUpload fileUploadListener="#{clienteBean.importarImagem}" 
+                                                  mode="advanced" 
+                                                  dragDropSupport="false"
+                                                  update="giImagem" 
+                                                  fileLimit="1" 
+                                                  allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                  label="#{msg.rotuloEscolherImagem}"
+                                                  uploadLabel="#{msg.rotuloCarregar}"
+                                                  cancelLabel="#{msg.rotuloCancelar}"/>
+                                </div>
+                            </div>
+                        </p:fieldset>
+
+                        <p:fieldset legend="#{msg.tituloPaginaPrincipalClienteDadosBasicos}" styleClass="conteinerCliente" style="width: 95%">
+                            <h:panelGrid columns="1" style="width: 100%" >
+                                <h:panelGroup >
+                                    <p:inputText id="txtNome" value="#{clienteBean.cliente.nome}" style="width: 100.2%" />
+                                    <p:watermark for="txtNome" value="#{msg.rotuloNomeCompleto}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                <h:panelGroup>
+                                    <p:calendar id="txtDataNascimento" locale="pt_BR" pattern="dd/MM/yyyy" mask="true" value="#{clienteBean.cliente.dataNascimento}" />
+                                    <p:watermark for="txtDataNascimento" value="#{msg.rotuloDataNascimento}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:selectOneMenu id="cbSexo"  value="#{clienteBean.cliente.sexo}" style="width: 240px">
+                                        <f:selectItem itemLabel="#{msg.rotuloSelecione}" itemValue="" />
+                                        <f:selectItem itemLabel="#{msg.rotuloMasculino}" itemValue="#{msg.rotuloOpcaoMasculino}" />
+                                        <f:selectItem itemLabel="#{msg.rotuloFeminino}"  itemValue="#{msg.rotuloOpcaoFeminino}" />
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputMask id="txtCpf" mask="999.999.999-99" onblur="validarCpf(this);" value="#{clienteBean.cliente.cpfFormatado}"/>
+                                    <p:watermark for="txtCpf" value="#{msg.rotuloCpf}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="1" style="width: 100%" >
+                                <h:panelGroup>
+                                    <p:inputText id="txtEmail" value="#{clienteBean.cliente.email}" styleClass="campoUnicoCliente" />
+                                    <p:watermark for="txtEmail" value="#{msg.rotuloEmail}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                <h:panelGroup>
+                                    <p:inputMask id="txtTelRes" mask="(99)9999-9999" value="#{clienteBean.cliente.tel_resFormatado}"/>
+                                    <p:watermark for="txtTelRes" value="#{msg.rotuloDDDTelRes}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputMask id="txtCel" mask="(99)99999-9999" value="#{clienteBean.cliente.celularFormatado}"/>
+                                    <p:watermark for="txtCel" value="#{msg.rotuloDDDCelular}" />
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputMask id="txtTelCom" mask="(99)9999-9999" value="#{clienteBean.cliente.tel_comFormatado}"/>
+                                    <p:watermark for="txtTelCom" value="#{msg.rotuloDDDTelCom}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <h:panelGrid columns="2" width="100%">
+                            <p:commandButton value="#{msg.rotuloSair}" onclick="PF('wgdDadosCadastrais').hide();" actionListener="#{clienteBean.zerarImagem}"  />
+                            <p:commandButton value="#{msg.rotuloSalvar}" style="float: right"  actionListener="#{clienteBean.alterarDadosBasicos}"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+                </p:dialog>
+
+                <p:dialog id="dlgDadosAcesso"
+                          widgetVar="wgdDadosAcesso"
+                          resizable="false"
+                          modal="true"
+                          draggable="false"
+                          width="25%">
+                    <p:outputPanel id="pnDadosAcesso" autoUpdate="true">
+                        <p:fieldset legend="#{msg.rotuloPaginaPrincipalClienteDadosAcesso}">
+                            <h:panelGrid columns="1">
+                                <p:column>
+                                    <p:inputText id="txtUsuario" value="#{clienteBean.cliente.login.usuario}" />
+                                    <p:watermark for="txtUsuario" value="Usuário" />
+                                </p:column>
+
+                                <p:column>
+                                    <p:password id="txtSenha" value="#{clienteBean.cliente.login.senha}" />
+                                    <p:watermark for="txtSenha" value="Senha" />
+                                </p:column>
+
+                                <p:column>
+                                    <p:password id="txtRepetirSenha" value="#{clienteBean.cliente.login.senha}" />
+                                    <p:watermark for="txtRepetirSenha" value="Repetir Senha" />
+                                </p:column>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:outputPanel>
+
+                    <h:panelGrid columns="2" width="100%">
+                        <p:commandButton value="#{msg.rotuloSair}"    onclick="PF('wgdDadosAcesso').hide();" />
+                        <p:commandButton value="#{msg.rotuloSalvar}"  style="float: right" actionListener="#{clienteBean.alterarDadosAcesso}"/>
+                    </h:panelGrid>
+                </p:dialog>                
+                
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

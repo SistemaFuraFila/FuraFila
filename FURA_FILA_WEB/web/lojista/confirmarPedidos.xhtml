@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>TITULO</title>
+    </h:head>
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formPrincipal">
+
+                <p:dataTable var="pedidosVar"
+                             value="#{confirmarPedidoBean.lstPedidos}"
+                             filteredValue="#{confirmarPedidoBean.lstPedidosFiltrados}"
+                             widgetVar="wdgPedidos"
+                             selection="#{confirmarPedidoBean.comanda}"
+                             selectionMode="single"
+                             rowKey="#{pedidosVar.cdComanda}">
+                    
+                    <p:ajax event="rowSelect" 
+                            listener="#{confirmarPedidoBean.detalharPedido()}" 
+                            oncomplete="PF('wdgConfirmar').show();"
+                            update=":formDialog:dlgConfirmar"/>
+                    
+                    <p:column headerText="COMANDA"
+                              filterBy="#{pedidosVar.cdComanda}"
+                              filterMatchMode="contains">
+
+                        #{pedidosVar.cdComanda}
+
+                    </p:column>
+
+                    <p:column headerText="FORMA DE PAGAMENTO">
+
+                        #{pedidosVar.formaPgto.formaPagto}
+
+                    </p:column>
+
+                    <p:column headerText="STATUS">
+
+                        #{pedidosVar.statusFormatado}
+
+                    </p:column>
+
+                    <p:column headerText="TOTAL">
+
+                        #{pedidosVar.totalCompraFormatada}
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+
+            <h:form id="formDialog">
+                
+                <p:dialog id="dlgConfirmar"
+                          widgetVar="wdgConfirmar"
+                          resizable="false"
+                          modal="true"
+                          width="50%">
+
+                    <p:panelGrid>
+
+                        <p:row>
+                            <p:column style="width: 35%">
+                                <p:outputLabel value="Comanda: " />
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="#{confirmarPedidoBean.comanda.cdComanda}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Prontuário: " />                
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="#{confirmarPedidoBean.comanda.login.usuario}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Forma de Pagamento: " />
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="#{confirmarPedidoBean.comanda.formaPgto.formaPagto}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Status: " />
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="#{confirmarPedidoBean.comanda.statusFormatado}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <p:outputLabel value="Total: " style="font-weight: bold " />
+                            </p:column>
+                            <p:column>
+                                <p:outputLabel value="#{confirmarPedidoBean.comanda.totalCompraFormatada}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="2">
+                                
+                                
+                                <p:dataTable value="#{confirmarPedidoBean.lstProdutoPedido}"
+                                             var="produtos"
+                                             scrollable="true"
+                                             scrollHeight="100"
+                                             style="width: 640px">
+                                    
+                                    <f:facet name="header">
+                                        <p:outputLabel value="PRODUTOS" />
+                                    </f:facet>
+                                    
+                                    
+                                    <p:column headerText="PRODUTO">
+                                        
+                                        #{produtos.produto}
+                                        
+                                    </p:column>
+                                    
+                                    <p:column headerText="PREÇO">
+                                        
+                                        #{produtos.valorUnitFormatado}
+                                        
+                                    </p:column>
+                                    
+                                    <p:column headerText="QUANTIDADE">
+                                        
+                                        #{produtos.qtd}
+                                        
+                                    </p:column>
+                                    
+                                    <p:column headerText="SUBTOTAL">
+                                        
+                                        #{produtos.subTotalFormatado}
+                                        
+                                    </p:column>
+                                    
+                                    <f:facet name="footer">
+                                        
+                                        <p:commandButton value="APROVAR" oncomplete="PF('wdgAprovar').show()" />
+                                        <p:commandButton value="RECUSAR" oncomplete="PF('wdgRecusar').show()" />
+                                        
+                                    </f:facet>
+                                    
+                                </p:dataTable>
+
+                            </p:column>
+                        </p:row>
+
+                    </p:panelGrid>
+
+                </p:dialog>
+                
+                <p:confirmDialog id="dlgAprovar"
+                                 message="Tem Certeza?"
+                                 header="APROVAR PEDIDO"
+                                 widgetVar="wdgAprovar">
+                    
+                    <div align="center">
+                        
+                        <p:commandButton value="Sim" 
+                                         oncomplete="PF('wdgAprovar').hide();PF('wdgConfirmar').hide()"
+                                         actionListener="#{confirmarPedidoBean.aprovarPedido()}"
+                                         ajax="false"/>
+                        
+                        <p:commandButton value="Não" 
+                                         oncomplete="PF('wdgAprovar').hide()" />
+                        
+                    </div>
+                    
+                </p:confirmDialog>
+                
+                <p:confirmDialog id="dlgRecusar"
+                                 message="Tem Certeza?"
+                                 header="RECUSAR PEDIDO"
+                                 widgetVar="wdgRecusar">
+                    
+                    <div align="center">
+                        
+                        <p:commandButton value="Sim" 
+                                         oncomplete="PF('wdgRecusar').hide();PF('wdgConfirmar').hide()"
+                                         actionListener="#{confirmarPedidoBean.recusarPedido()}"
+                                         ajax="false"/>
+                        
+                        <p:commandButton value="Não" 
+                                         oncomplete="PF('wdgRecusar').hide()" />
+                        
+                    </div>
+                    
+                </p:confirmDialog>
+                
+            </h:form>
+            
+        </ui:define>
+    </ui:composition>
+</html>

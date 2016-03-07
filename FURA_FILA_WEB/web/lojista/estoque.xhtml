@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formPrincipal">
+
+                <f:metadata>  
+                    <f:event type="preRenderView" listener="#{produtoBean.popularProdutos()}" />  
+                </f:metadata>  
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="#{msg.rotuloLojistaSubMenuProdutos}" styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+
+                <div style="float: left;width: 80%">
+                    <p:dataTable id="dgvEstoque"
+                                 emptyMessage="#{msg.rotuloSemRegistros}"
+                                 value="#{produtoBean.lstProdutos}"
+                                 scrollable="true"
+                                 scrollHeight="550"
+                                 stickyHeader="true"
+                                 var="produto"
+                                 selectionMode="single"
+                                 selection="#{produtoBean.estoqueProdutos}"
+                                 rowKey="#{produto.produto.id_produto}" >
+
+                        <p:ajax event="rowSelect" listener="#{produtoBean.habilitarBotoes}"     
+                                update=":formPrincipal:btnEditar :formPrincipal:btnExcluir :formPrincipal:btnEntradaProdutos :formPrincipal:btnCatalogo">
+                            <f:setPropertyActionListener target="#{produtoBean.estoqueProdutos}" value="#{produto}" />
+                        </p:ajax>
+                        <p:ajax event="rowUnselect" listener="#{produtoBean.desabilitarBotoes}" 
+                                update=":formPrincipal:btnEditar :formPrincipal:btnExcluir :formPrincipal:btnEntradaProdutos :formPrincipal:btnCatalogo"/>
+
+                        <p:column headerText="#{msg.rotuloProduto}">
+                            #{produto.produto.produto_desc}
+                        </p:column >
+                        <p:column headerText="#{msg.rotuloTipoProduto}">
+                            #{produto.produto.tipoProduto.tipo_produto_desc}
+                        </p:column>
+                        <p:column headerText="Preço">
+                            #{produto.produto.valor_unitarioExibicao}
+                        </p:column>
+                        <p:column headerText="#{msg.rotuloLojistaQtdeEstoque}">
+                            #{produto.qtdEstoque}
+                        </p:column>
+                        <p:column headerText="#{msg.rotuloStatus}">
+                            #{produto.produto.statusExibicao}
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+                <div style="float: right;width: 20%" align="center">
+                    <p:panel>
+                        <p:commandButton id="btnNovo"
+                                         value="#{msg.rotuloLojistaAdicionarProduto}" 
+                                         onclick="PF('wdgProduto').show()"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnEditar"
+                                         value="#{msg.rotuloLojistaEditarProduto}"
+                                         disabled="#{produtoBean.flgBotoes or produtoBean.estoqueProdutos.produto.status}"
+                                         onclick="PF('wgdInfoProduto').show()"
+                                         update=":formInfoProduto:outEdicaoUsuario"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnExcluir"
+                                         value="#{produtoBean.nomeBotaoAtivarDesativar()}"
+                                         disabled="#{produtoBean.flgBotoes}"
+                                         onclick="PF('wdgConfirma').show()"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnEntradaProdutos"
+                                         value="#{msg.rotuloLojistaEntradaProduto}"
+                                         disabled="#{produtoBean.flgBotoes or produtoBean.estoqueProdutos.produto.status}"
+                                         onclick="PF('wgdEstoque').show()"
+                                         style="width: 100%"
+                                         update=":formEstoque:outEstoque"/>
+
+                        <p:commandButton id="btnCatalogo"
+                                         value="Alterar Preço"
+                                         disabled="#{produtoBean.flgBotoes or produtoBean.estoqueProdutos.produto.status or produtoBean.estoqueProdutos.qtdEstoque != 0}"
+                                         onclick="PF('wdgPrecoVar').show()"
+                                         style="width: 100%"/>
+
+
+                    </p:panel>
+                </div>
+
+                <p:confirmDialog widgetVar="wdgConfirma" message="#{msg.mensagemTemCerteza}">
+                    <p:commandButton value="#{msg.rotuloSim}" actionListener="#{produtoBean.alterarStatus}"      
+                                         update=":formPrincipal:btnEditar :formPrincipal:btnExcluir :formPrincipal:btnEntradaProdutos :formPrincipal:btnCatalogo :formPrincipal:dgvEstoque" 
+                                         oncomplete="PF('wdgConfirma').hide()"/>
+                    <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgConfirma').hide()" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <h:form>
+                <p:dialog widgetVar="wdgPrecoVar"
+                          id="dlgPreco"
+                          header="#{msg.rotuloLojistaCardapioEditarPreco}"
+                          resizable="false"
+                          modal="true"
+                          closeOnEscape="true"
+                          showEffect="explode"
+                          hideEffect="explode">
+                    <p:outputPanel autoUpdate="true">
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="#{msg.rotuloPreco}:" />
+                            <p:inputText value="#{produtoBean.estoqueProdutos.produto.valor_unitario}" id="txtValorUnitario"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" style="width: 100%">
+                            <p:commandButton value="#{msg.rotuloSair}" style="float:left;" onclick="PF('wdgPrecoVar').hide()" />
+                            <p:commandButton value="#{msg.rotuloSalvar}" style="float:right;" actionListener="#{produtoBean.alterarPreco}" update=":formPrincipal:dgvEstoque" oncomplete="PF('wdgPrecoVar').hide()"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+                </p:dialog>
+            </h:form>
+
+            <h:form id="formInfoProduto" style="overflow-y: auto" enctype="multipart/form-data">
+                <p:dialog id="dlgInfoProduto"
+                          widgetVar="wgdInfoProduto"
+                          modal="true"
+                          closable="false"
+                          resizable="false"
+                          header="#{msg.rotuloLojistaEditarProduto}">
+
+                    <p:outputPanel id="outEdicaoUsuario">
+                        <h:panelGrid columns="2">
+                            <p:fieldset legend="#{msg.rotuloProduto}">
+                                <h:panelGrid columns="1">
+
+                                    <p:outputLabel value="#{msg.rotuloProduto}:" />
+                                    <p:inputText id="txtProduto" 
+                                                 value="#{produtoBean.estoqueProdutos.produto.produto_desc}"/>
+
+                                    <p:outputLabel value="#{msg.rotuloLojistaEstoqueMinimo}:" />
+                                    <p:inputText id="txtEstoqueMinimo" 
+                                                 value="#{produtoBean.estoqueProdutos.produto.qtdMinima}"/>
+
+                                    <p:outputLabel value="#{msg.rotuloTipoProduto}:" />
+                                    <p:selectOneMenu id="cbTipoProduto" 
+                                                     value="#{produtoBean.estoqueProdutos.produto.tipoProduto.id_tipo_produto}" 
+                                                     style="width:100%">
+                                        <f:selectItem  itemLabel="#{msg.rotuloSelecione}"
+                                                       itemValue="0"/>
+                                        <f:selectItems var="tipoProduto" 
+                                                       itemLabel="#{tipoProduto.tipo_produto_desc}" 
+                                                       itemValue="#{tipoProduto.id_tipo_produto}" 
+                                                       value="#{produtoBean.lstTipoProduto}" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="#{msg.rotuloImagem}" style="width: 95%">
+                                <div align="center">
+
+                                    <div align="center">
+                                        <p:graphicImage id="fotoEditar" 
+                                                        value="#{produtoBean.estoqueProdutos.produto.imagem.imagemVisualizar_2}" 
+                                                        styleClass="imagem" >
+                                            <f:param name="imagem" value="#{produto.produto.imagem.imagem}" />
+                                        </p:graphicImage>
+                                    </div>
+                                    <div align="center">
+                                        <p:fileUpload  style="width: 105%;overflow-x: hidden;overflow-y: hidden" 
+                                                       label="#{msg.rotuloEscolherImagem}"
+                                                       cancelLabel="#{msg.rotuloCancelar}"
+                                                       uploadLabel="#{msg.rotuloCarregar}"
+                                                       fileUploadListener="#{produtoBean.carregarImagem}"
+                                                       update="fotoEditar"/>
+                                    </div>
+                                </div>
+                            </p:fieldset>
+                        </h:panelGrid>
+
+                        <div align="center">
+                            <p:fieldset legend="#{msg.rotuloDimensoes}" style="width: 70%">
+
+                                <h:panelGrid columns="3">
+                                    <h:panelGroup>
+                                        <h:panelGrid>
+                                            <p:outputLabel value="#{msg.rotuloAltura}:" />
+                                            <p:slider for="txtAltura" maxValue="1000" style="width: 90%" />
+                                            <p:inputText id="txtAltura" value="#{produtoBean.estoqueProdutos.produto.dimensao.altura}"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <h:panelGrid>
+                                            <p:outputLabel value="#{msg.rotuloLargura}:" />
+                                            <p:slider for="txtLargura" maxValue="1000" style="width: 90%" />
+                                            <p:inputText id="txtLargura" value="#{produtoBean.estoqueProdutos.produto.dimensao.largura}"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <h:panelGrid>
+                                            <p:outputLabel value="#{msg.rotuloProfundidade}:" />
+                                            <p:slider for="txtProfundidade" maxValue="1000" style="width: 90%" />
+                                            <p:inputText id="txtProfundidade" value="#{produtoBean.estoqueProdutos.produto.dimensao.profundidade}"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+
+                            </p:fieldset>
+                        </div>
+                    </p:outputPanel>
+
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <p:commandButton value="#{msg.rotuloCancelar}" 
+                                         style="float: left" 
+                                         onclick="PF('wgdInfoProduto').hide()" />
+                        <p:commandButton id="btnEditarGravar" 
+                                         value="#{msg.rotuloSalvar}" 
+                                         style="float: right"
+                                         actionListener="#{produtoBean.alterar}"
+                                         oncomplete="PF('wgdInfoProduto').hide()"
+                                         update=":formPrincipal:dgvEstoque"/>
+                    </h:panelGrid>
+                </p:dialog>
+
+            </h:form>
+
+            <h:form id="formProduto">
+                <p:dialog id="dlgProduto"
+                          widgetVar="wdgProduto"
+                          modal="true"
+                          closeOnEscape="true"
+                          resizable="false"
+                          header="#{msg.rotuloLojistaAdicionarProduto}">
+                    <ui:include src="produtos.xhtml" />
+                </p:dialog>
+
+            </h:form>
+
+            <h:form id="formEstoque">
+
+                <p:growl id="grMsgEstoque" life="5000" showDetail="true" />
+
+                <p:dialog id="dlgEstoque"
+                          widgetVar="wgdEstoque"
+                          modal="true"
+                          resizable="false"
+                          header="#{msg.rotuloLojistaEntradaProduto}">
+
+                    <p:outputPanel id="outEstoque">
+                        <p:fieldset legend="#{produtoBean.estoqueProdutos.produto.produto_desc}">
+                            <h:panelGrid columns="1">
+                                
+                                <p:outputLabel value="#{msg.rotuloLojistaEstoqueMinimo}" />
+                                <p:inputText value="#{produtoBean.estoqueProdutos.produto.qtdMinima}" styleClass="camposNumericos" disabled="true"/>
+
+                                <p:outputLabel value="#{msg.rotuloLojistaQtdeEstoque}" />
+                                <p:inputText value="#{produtoBean.qtdeEstoqueAntiga}" styleClass="camposNumericos"/>
+
+                                <h:panelGrid columns="2" style="width: 100%">
+
+                                    <p:commandButton value="#{msg.rotuloSair}" 
+                                                     style="float: left" 
+                                                     onclick="PF('wgdEstoque').hide()" />
+
+                                    <p:commandButton value="#{msg.rotuloSalvar}" 
+                                                     style="float: right"
+                                                     actionListener="#{produtoBean.entradaProdutos}" 
+                                                     update=":formPrincipal:dgvEstoque"
+                                                     oncomplete="PF('wgdEstoque').hide()"/>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:outputPanel>
+                </p:dialog>
+
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:include src="/importacoes.xhtml" />
+
+    <h:head>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;v=3.4"></script>
+        <script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js">
+        </script> 
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:body>
+                <h:form id="formFinaliza">
+                    <f:metadata>
+                        <f:event type="postAddToView" listener="#{comprarProdutosBean.popularProdutosComprar()}" />
+                    </f:metadata>  
+
+                    <h:inputHidden  id="txtLatitude"  value="#{comprarProdutosBean.latitudeHidden}"  />
+                    <h:inputHidden  id="txtLongitude" value="#{comprarProdutosBean.longitudeHidden}" />
+                    <p:tabView id="tbFinalizar" activeIndex="#{comprarProdutosBean.tabIndex}" >
+
+                        <p:tab id="tbLocker" title="#{msg.rotuloFinalizarCompraEscolherLocker}" disabled="true" >
+                            <ui:include src="geoMap.xhtml" />
+                            <p:fieldset id="fsLocker" legend="#{msg.tituloClienteEndereco}" styleClass="conteinerCliente">
+
+                                <p:outputPanel id="pnEndereco">
+                                    <h:panelGroup>
+                                        <p:inputMask mask="99999-999" id="txtcep" value="#{comprarProdutosBean.logradouro.nroCepFormatado}">
+                                            <p:watermark value="#{msg.rotuloGeoMapFornecaoCep}" for="txtcep" />
+                                        </p:inputMask>
+                                        <p:commandButton value="#{msg.rotuloPaginaGeoMapOk}" 
+                                                         actionListener="#{comprarProdutosBean.pesquisarGeolocalizacao}"
+                                                         update="formGeo:gmMap pnEndereco formGeo:dtLockers" />
+                                    </h:panelGroup>
+                                    <h:panelGrid columns="1" style="width: 100%">
+                                        <h:panelGroup>
+                                            <p:inputText id="txtLogradouro" 
+                                                         value="#{comprarProdutosBean.logradouro.logradouroFormatado}" 
+                                                         styleClass="campoUnicoCliente" />
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+
+                                    <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                        <h:panelGroup>
+                                            <p:inputText id="txtBairro" value="#{comprarProdutosBean.logradouro.bairro.desc_bairro}"/>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup>
+                                            <p:inputText id="txtCidade" value="#{comprarProdutosBean.logradouro.bairro.cidade.desc_cidade}"/>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup>
+                                            <p:inputText id="txtEstado" value="#{comprarProdutosBean.logradouro.bairro.cidade.uf.sigla_uf}"/>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+                                </p:outputPanel>
+                            </p:fieldset>
+                            <div align="center">
+                                <h:panelGrid columns="2" style="width: 50%">
+                                    <h:panelGroup>
+                                        <p:commandButton id="btnAnterior" 
+                                                         value="Anterior" 
+                                                         disabled="#{comprarProdutosBean.tabIndex == 0}" 
+                                                         update=":formBotoes:btnProximo :formBotoes:btnAnterior formFinaliza:tbFinalizar" 
+                                                         actionListener="#{comprarProdutosBean.retroceder}"
+                                                         ajax="false"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <p:commandButton id="btnProximo" 
+                                                         value="Próximo" 
+                                                         disabled="#{comprarProdutosBean.tabIndex == 2}"
+                                                         update=":formBotoes:btnProximo :formBotoes:btnAnterior formFinaliza:tbFinalizar"
+                                                         actionListener="#{comprarProdutosBean.irResumoPedido}"
+                                                         ajax="false"/>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </div>
+                        </p:tab>
+                        <p:tab title="Resumo do pedido" disabled="true" >
+                            <ui:include src="resumoPedido.xhtml" />
+                            <div align="center">
+                                <h:panelGrid columns="3" style="width: 50%">
+                                    <h:panelGroup>
+                                        <p:commandButton id="btnAnteriorResumo" 
+                                                         value="Anterior" 
+                                                         disabled="#{comprarProdutosBean.tabIndex == 0}" 
+                                                         update=":formBotoes:btnProximo :formBotoes:btnAnterior formFinaliza:tbFinalizar" 
+                                                         actionListener="#{comprarProdutosBean.retroceder}"
+                                                         ajax="false"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <p:commandButton id="btnEfetuarPagamento" 
+                                                         value="Efetuar Pagamento" 
+                                                         disabled="#{comprarProdutosBean.tabIndex == 2}"
+                                                         actionListener="#{comprarProdutosBean.efetuarPagamento}"
+                                                         ajax="false"
+                                                         onclick="this.form.target = '_blank';">
+                                        </p:commandButton>
+                                    </h:panelGroup> 
+                                    <h:panelGroup>
+                                        <p:commandButton value="Próximo"
+                                                         id="btnProximoResumo"
+                                                         actionListener="#{comprarProdutosBean.finalizar}" 
+                                                         update="btnEfetuarPagamento btnAnteriorResumo formFinaliza:tbFinalizar"/>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </div>
+                        </p:tab>
+                        <p:tab title="Compra Finalizada" disabled="true" >
+                            <ui:include src="compraFinalizada.xhtml" />
+                        </p:tab>
+                    </p:tabView>
+                    <p:remoteCommand name="organizarLockers" update="formFinaliza:tbFinalizar:formGeo:dtLockers" actionListener="#{comprarProdutosBean.organizarLockers}"/>
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog widgetVar="wdgConfirmaPesquisa" message="Gostaria de realizar nossa pesquisa de qualidade?">
+                        <div align="center">
+                            <p:commandButton value="#{msg.rotuloSim}" action="#{comprarProdutosBean.irPesquisa()}" ajax="false" />
+                            <p:commandButton value="#{msg.rotuloNao}" action="#{comprarProdutosBean.irPaginaCliente()}" ajax="false"  />
+                        </div>
+                    </p:confirmDialog>
+                </h:form>
+
+            </h:body>
+        </ui:define>
+    </ui:composition>
+</html>

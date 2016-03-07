@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:include src="/importacoes.xhtml" />
+
+    <h:head>
+    </h:head>
+
+    <h:form id="formPrincipal">
+        <p:growl id="gMsg" showDetail="true" />
+        <p:remoteCommand autoRun="true" onsuccess="PF('wdgConfirmarPedido').show()" />
+
+        <p:dialog widgetVar="wdgConfirmarPedido" 
+                  modal="true" 
+                  resizable="false" 
+                  draggable="true" 
+                  closable="false" 
+                  closeOnEscape="false">
+            <p:panel header="Forneça o número do Pedido">
+                <p:inputText value="#{comandaBean.pedidoLocker.pedidos.comanda.id_comanda}" 
+                             required="true" 
+                             requiredMessage="O número do pedido não pode ser vazio" />
+                <p:commandButton value="Confirmar" 
+                                 actionListener="#{comandaBean.confirmarPedido}" 
+                                 oncomplete="window.open('','_self','');window.close(); ">
+                </p:commandButton>
+            </p:panel>
+        </p:dialog>
+    </h:form>
+</html>

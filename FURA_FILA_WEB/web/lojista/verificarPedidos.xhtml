@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>TITULO</title>
+    </h:head>
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+
+            <h:form id="formPrincipal">
+                
+                <p:panel id="pnTipoPesquisa1"
+                         header="Vendas confirmadas por dia">
+
+                    <p:fieldset legend="Data:">
+                        <h:panelGrid columns="2">
+                            <p:calendar id="popup" effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" value="#{verificarPedidosBean.comanda.dataConfirmacaoDate}"/>
+                            <p:commandButton value="Pesquisar" action="#{verificarPedidosBean.pesquisar()}" update="dgvComanda" />
+                        </h:panelGrid>
+                    </p:fieldset>
+                </p:panel>
+                    
+                <p:dataTable id="dgvComanda"
+                             value="#{verificarPedidosBean.lstComandas}"
+                             var="comanda"
+                             emptyMessage="Sem registros"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                             paginator="true" rows="10" >
+
+                    <p:column headerText="COMANDA">
+                        
+                        #{comanda.cdComanda}
+                        
+                    </p:column>
+                    
+                    <p:column headerText="QTD PRODUTOS">
+                        
+                        #{comanda.qtdTotal}
+                        
+                    </p:column>
+                    
+                    <p:column headerText="TOTAL">
+                        
+                        #{comanda.totalCompraFormatada}
+                        
+                    </p:column>
+                    
+                    <p:column headerText="STATUS">
+                        
+                        #{comanda.statusFormatado}
+                        
+                    </p:column>
+                    
+                    <p:column headerText="DATA DE VENDA">
+                        
+                        #{comanda.dataVenda}
+                        
+                    </p:column>
+                    
+                    <p:column headerText="DATA DA CONFIRMAÇÃO">
+                        
+                        #{comanda.dataConfirmacao}
+                        
+                    </p:column>
+                        
+                        <f:facet name="{Exporters}" >
+                            <div style="float: right">
+                                <p:commandLink style="margin-right: 10px" 
+                                               rendered="#{not empty verificarPedidosBean.lstComandas}" 
+                                               onclick="PF('dlgGrafico').show();">
+                                    <p:graphicImage url="/resources/grafico_32x32.png"/>
+                                </p:commandLink>
+                                
+                                <p:commandLink actionListener="#{verificarPedidosBean.criarPlanilha()}" 
+                                               ajax="false" 
+                                               rendered="#{not empty verificarPedidosBean.lstComandas}">
+                                    <p:graphicImage url="/resources/xls32x32.png"/>
+                                </p:commandLink>
+                                
+                            </div>
+                        </f:facet>
+                        
+                    </p:dataTable>
+            </h:form>
+            
+            <h:form id="formGrafico">
+
+                <p:dialog header="Gráfico"
+                          resizable="false"
+                          widgetVar="dlgGrafico"
+                          id="dlgGrafico"
+                          modal="true"
+                          width="650"
+                          position="center">
+
+                    <p:chart type="bar" id="idGrafico" widgetVar="wdgGrafico" model="#{verificarPedidosBean.graficoBarra}" style="width: 600px"/>
+                    
+                </p:dialog>
+            </h:form>
+            
+            
+        </ui:define>
+    </ui:composition>
+
+</html>

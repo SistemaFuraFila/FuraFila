@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/security
+						http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+ 
+    <sec:http auto-config="true" use-expressions="true">
+        <sec:intercept-url pattern="/administrador/**" access="hasRole('ROLE_ADM')" />
+        <sec:intercept-url pattern="/lojista/**" access="hasRole('ROLE_PERFIL2')" />
+        <sec:intercept-url pattern="/cliente/**" access="hasRole('ROLE_PERFIL3')" />
+        <sec:intercept-url pattern="/entregador/**" access="hasRole('ROLE_PERFIL4')" />
+        <sec:form-login login-page="/index.xhtml" />
+        <sec:logout delete-cookies="true" invalidate-session="true" logout-success-url="/index.xhtml"/>
+        
+    </sec:http>
+     
+    <sec:authentication-manager alias="authenticationManager">
+        
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user authorities="ROLE_ADM" name="A" password="123" />
+            </sec:user-service>
+        </sec:authentication-provider>
+        
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user authorities="ROLE_PERFIL2" name="L" password="123" />
+            </sec:user-service>
+        </sec:authentication-provider>
+        
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user authorities="ROLE_PERFIL3" name="C" password="123" />
+            </sec:user-service>
+        </sec:authentication-provider>
+        
+        <sec:authentication-provider>
+            <sec:user-service>
+                <sec:user authorities="ROLE_PERFIL4" name="E" password="123" />
+            </sec:user-service>
+        </sec:authentication-provider>
+        
+    </sec:authentication-manager>
+    
+</beans:beans>

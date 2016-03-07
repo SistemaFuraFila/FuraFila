@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formComprar" enctype="multipart/form-data">
+
+                <p:growl id="grComprarProduto" showDetail="true" />
+
+                <f:metadata>  
+                    <f:event type="postAddToView" listener="#{comprarProdutosBean.popularProdutosComprar()}" />  
+                    <f:event type="postAddToView" listener="#{comprarProdutosBean.popularFiltro()}" />  
+                </f:metadata>  
+
+                <div>
+                    <p:accordionPanel style="width: 100%" >
+                        <p:tab title="#{msg.rotuloPaginaComprarPaginaFiltro}">
+                            <p:panel>
+                                <p:outputPanel id="outFiltro">
+                                    <h:panelGrid columns="2" width="100%" columnClasses="filtroEstabelecimento,filtroPreco">
+                                        <h:panelGroup style="width: 100%">
+                                            <h:panelGrid style="width: 100%">
+                                                <p:outputLabel value="#{msg.tituloCadastroEstabelecimento}:" />
+                                                <p:selectOneMenu value="#{comprarProdutosBean.comprarProduto.estabelecimento.id_estabelecimento}" style="width: 100%">
+                                                    <f:selectItem itemLabel="#{msg.rotuloSelecione}" itemValue="0" />
+                                                    <f:selectItems value="#{comprarProdutosBean.lstEstabelecimentosFiltro}" 
+                                                                   var="estabelecimento" 
+                                                                   itemLabel="#{estabelecimento.razao_social}" 
+                                                                   itemValue="#{estabelecimento.id_estabelecimento}" />
+                                                </p:selectOneMenu>
+                                            </h:panelGrid>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup style="width: 100%">
+                                            <h:panelGrid style="width: 100%">
+                                                <p:outputLabel value="Ordenar por:" />
+                                                <p:selectOneMenu value="#{comprarProdutosBean.comprarProduto.ordenarProdutos}" style="width: 100%">
+                                                    <f:selectItem itemLabel="#{msg.rotuloSelecione}" itemValue="" />
+                                                    <f:selectItems value="#{comprarProdutosBean.lstOrdens}" />
+                                                </p:selectOneMenu>
+                                            </h:panelGrid>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+                                </p:outputPanel>
+
+                                <div style="float: left">
+                                    <p:commandButton value="Limpar filtros" actionListener="#{comprarProdutosBean.limparFiltros}" update=":formComprar:dgComprarProduto outFiltro" />
+                                </div>
+                                <div style="float: right">
+                                    <p:commandButton value="Filtrar" actionListener="#{comprarProdutosBean.popularProdutosComprar()}" update=":formComprar:dgComprarProduto" />
+                                </div>
+
+                            </p:panel>
+                        </p:tab>
+                    </p:accordionPanel>
+                </div>
+
+                <div align="center" >
+                    <h:panelGrid style="width: 100%;" >
+                        <p:dataGrid id="dgComprarProduto" layout="grid" value="#{comprarProdutosBean.lstProdutoComprar}" var="produto" columns="3">
+                            <p:column id="colunaProduto">
+                                <div style="width: 300px; margin-left: 5%" align="center" >
+                                    <p:fieldset legend="#{produto.comanda.estabelecimento.razao_social}" >
+                                        <h:panelGrid columns="1" style="text-align: center"  >
+                                            <p:graphicImage value="#{comprarProdutosBean.produtos.imagem.imagemVisualizar}" style="margin: 5px" width="100px" height="100px">
+                                                <f:param name="imagem" value="#{produto.produto.imagem.imagem}" />
+                                            </p:graphicImage>
+                                            <p:outputLabel value="#{produto.produto.produto_desc}" />
+                                            <p:outputLabel value="#{produto.produto.valor_unitarioExibicao}" />
+
+                                            <p:outputPanel id="outpnSubTotal">
+                                                <p:spinner id="spQtd" value="#{produto.qtd}" min="0" disabled="#{comprarProdutosBean.verificarEstabelecimentoDuplicado(produto)}">
+                                                    <p:ajax update="outpnSubTotal"/>
+                                                </p:spinner>
+                                                <p:outputLabel value="#{produto.subTotalExibicao}" />
+                                            </p:outputPanel>
+                                        </h:panelGrid>
+
+                                        <div style="text-align: center">
+                                            <p:commandButton id="btnAdicionarCarrinho"
+                                                             value="#{msg.rotuloPaginaComprarPaginaAddCarrinho}" 
+                                                             actionListener="#{comprarProdutosBean.adicionarCarrinho(produto)}"
+                                                             update="outpnSubTotal :formComprar:grComprarProduto :formComprar:dgComprarProduto"
+                                                             disabled="#{comprarProdutosBean.verificarEstabelecimentoDuplicado(produto)}"/>
+                                        </div>
+
+                                    </p:fieldset>
+                                </div>
+                            </p:column>
+                        </p:dataGrid>
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

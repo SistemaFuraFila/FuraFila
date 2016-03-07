@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="estabelecimentoVendas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9db999b-8cad-41c9-b4a1-8964e6cc4b44">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="PATH_IMAGE" class="java.lang.String"/>
+	<field name="comanda.estabelecimento.razao_social" class="java.lang.String"/>
+	<field name="qtd" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="104" splitType="Stretch">
+			<image>
+				<reportElement x="-1" y="10" width="183" height="58" uuid="86d36600-0953-4f23-9c17-d8cd240b5e53"/>
+				<imageExpression><![CDATA[$P{PATH_IMAGE}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="-1" y="68" width="555" height="34" uuid="0ae45fea-e29f-4f05-a1b8-2466ea065958"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[Estabelecimentos que mais venderam]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="443" y="17" width="100" height="20" uuid="7e984699-c077-4c0e-b053-197b53d73566"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="268" y="19" width="148" height="20" uuid="646bc89a-db54-4655-a1ce-300030fb7849"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Qtde de Produtos Vendidos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="19" width="148" height="20" uuid="8f0a78b5-8fd7-4b8e-b4a0-b4eba139c447"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Razão social]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="120" y="0" width="148" height="20" uuid="45c8be49-9a54-46a6-a3b0-6f39cb690cf0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{comanda.estabelecimento.razao_social}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="0" width="148" height="20" uuid="e9002146-e1a2-4edf-a9fa-ec0d36f1450f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{qtd}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:form id="formLockers">
+
+                <f:metadata>  
+                    <f:event type="postAddToView" listener="#{conjuntoLockerBean.popularConjuntoLockers}" />  
+                </f:metadata>  
+
+                <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
+                    <h:outputLabel value="#{msg.rotuloLojistaSubMenuAddLocker}" styleClass="labelTitulo" />
+                </div>
+                <p:separator styleClass="separador" />
+
+                <div style="float: left;width: 80%">
+                    <p:dataTable
+                        id="dgvLockers"
+                        value="#{conjuntoLockerBean.lstConjuntoLockers}"
+                        var="conjuntoLocker"
+                        scrollable="true"
+                        scrollHeight="470"
+                        stickyHeader="true"
+                        selectionMode="single"
+                        selection="#{conjuntoLockerBean.conjuntoLocker}"
+                        rowKey="#{conjuntoLocker.id_conjunto_locker}">>
+
+                        <p:ajax event="rowSelect" update=":formLockers:btnEditar :formLockers:btnExcluir" listener="#{conjuntoLockerBean.ativarBotoes}"/>
+                        <p:ajax event="rowUnselect" update=":formLockers:btnEditar :formLockers:btnExcluir" listener="#{conjuntoLockerBean.desativarBotoes}" />
+
+                        <p:column headerText="#{msg.rotuloLojistaLockersDescricao}">
+                            #{conjuntoLocker.conjunto_locker_desc}
+                        </p:column>
+                        <p:column headerText="#{msg.rotuloLojistaLockerLocalizacao}">
+                            #{conjuntoLocker.logradouro.nroCepFormatado}
+                        </p:column>
+                        <p:column headerText="#{msg.rotuloStatus}">
+                            #{conjuntoLocker.statusExibicao}
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+                <div style="float: right;width: 20%" align="center">
+                    <p:panel>
+                        <p:commandButton id="btnNovo"
+                                         value="#{msg.rotuloLojistaAdicionarLocker}" 
+                                         onclick="PF('wgdNovoLocker').show()"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnEditar"
+                                         value="#{msg.rotuloLojistaEditarLocker}"
+                                         disabled="#{conjuntoLockerBean.flgBotoes}"
+                                         onclick="PF('wgdEditarLocker').show()"
+                                         update=":formEdicao:outEdicao"
+                                         actionListener="#{conjuntoLockerBean.popularLockerPorConjunto}"
+                                         style="width: 100%"/>
+
+                        <p:commandButton id="btnExcluir"
+                                         value="#{conjuntoLockerBean.nomeBotarAtivarDesativar()}"
+                                         disabled="#{conjuntoLockerBean.flgBotoes}"
+                                         onclick="PF('wdgConfirmaExclusao').show()"
+                                         style="width: 100%"/>
+
+                    </p:panel>
+                </div>
+
+                <p:confirmDialog widgetVar="wdgConfirmaExclusao" message="#{msg.mensagemTemCerteza}">
+                    <p:commandButton value="#{msg.rotuloSim}" actionListener="#{conjuntoLockerBean.alterarStatus}" oncomplete="PF('wdgConfirmaExclusao').hide()" update=":formLockers:dgvLockers :formLockers:btnExcluir"/>
+                    <p:commandButton value="#{msg.rotuloNao}" onclick="PF('wdgConfirmaExclusao').hide()" />
+                </p:confirmDialog>
+
+            </h:form>
+
+            <h:form id="formNovoLocker">
+                <p:dialog id="dlgNovoLocker"
+                          widgetVar="wgdNovoLocker"
+                          modal="true"
+                          closable="false"
+                          resizable="false"
+                          header="#{msg.rotuloLojistaAdicionarLocker} conjunto de Lockers">
+
+                    <p:messages id="msgNovoLocker"/>
+                    <p:fieldset legend="Descrição">
+                        <p:inputText id="txtDescConjunto" 
+                                     value="#{conjuntoLockerBean.conjuntoLocker.conjunto_locker_desc}" 
+                                     style="width: 100%"
+                                     required="true"
+                                     requiredMessage="O campo Descrição não pode estar vazio" >
+                            <p:watermark value="Descrição do Conjunto" for="txtDescConjunto" />
+                        </p:inputText>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Quantidade de lockers">
+                        <h:panelGrid columns="2">
+                            <p:inputText id="txtTamanhoPequeno" 
+                                         value="#{conjuntoLockerBean.qtdLockerPequeno}" 
+                                         style="text-align: right" 
+                                         converterMessage="O campo Pequeno aceita apenas números">
+                                <p:watermark for="txtTamanhoPequeno" value="Pequeno" />
+                            </p:inputText>
+                            <p:outputLabel value="Dimensões: 30x30x60" />
+                            <p:inputText id="txtTamanhoMedio"  
+                                         value="#{conjuntoLockerBean.qtdLockerMedio}" 
+                                         style="text-align: right" 
+                                         converterMessage="O campo Médio aceita apenas números">
+                                <p:watermark for="txtTamanhoMedio" value="Médio" />
+                            </p:inputText>
+                            <p:outputLabel value="Dimensões: 60x60x60" />
+                            <p:inputText id="txtTamanhoGrande"  
+                                         value="#{conjuntoLockerBean.qtdLockerGrande}" 
+                                         style="text-align: right" 
+                                         converterMessage="O campo Grande aceita apenas números" >
+                                <p:watermark for="txtTamanhoGrande" value="Grande" />
+                            </p:inputText>
+                            <p:outputLabel value="Dimensões: 90x90x60" />
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:fieldset legend="#{msg.tituloClienteEndereco}">
+                        <h:panelGrid columns="3">
+                            <h:panelGroup>
+                                <p:inputMask id="txtCep" 
+                                             mask="99999-999"
+                                             value="#{conjuntoLockerBean.conjuntoLocker.logradouro.nroCepFormatado}"
+                                             required="true"
+                                             requiredMessage="O campo CEP não pode estar vazio" >
+                                    <p:ajax event="blur" update="outEndereco" listener="#{conjuntoLockerBean.procurarCep()}"  />
+                                </p:inputMask>
+                                <p:watermark for="txtCep" value="#{msg.rotuloCEP}" />
+                            </h:panelGroup>
+                            <h:panelGroup style="width: 15px" />
+                            <p:inputText id="txtNumero" 
+                                         value="#{conjuntoLockerBean.conjuntoLocker.nro_localizacao}"
+                                         required="true"
+                                         requiredMessage="O campo Número não pode estar vazio" >
+                                <p:watermark value="#{msg.rotuloNumero}" for="txtNumero" />
+                            </p:inputText>
+                        </h:panelGrid>
+
+                        <p:outputPanel id="outEndereco">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:panelGroup>
+                                    <p:inputText id="txtLogradouro" 
+                                                 styleClass="campoUnicoCliente"
+                                                 value="#{conjuntoLockerBean.conjuntoLocker.logradouro.logradouroFormatado}" 
+                                                 disabled="true"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                <h:panelGroup>
+                                    <p:inputText id="txtBairro"
+                                                 value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.desc_bairro}" 
+                                                 disabled="true"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtCidade"
+                                                 value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.cidade.desc_cidade}"  
+                                                 disabled="true"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtEstado"
+                                                 value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.cidade.uf.sigla_uf}"  
+                                                 disabled="true"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <p:commandButton value="#{msg.rotuloSair}" style="float: left" oncomplete="PF('wgdNovoLocker').hide()" />
+                        <p:commandButton id="btnEditarGravar" 
+                                         value="#{msg.rotuloSalvar}" 
+                                         style="float: right" 
+                                         actionListener="#{conjuntoLockerBean.gravar}"
+                                         ajax="false"
+                                         update=":formLockers:dgvLockers :formNovoLocker:msgNovoLocker"
+                                         oncomplete="if (!args.validationFailed){PF('wgdNovoLocker').hide()}" />
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+
+            <h:form id="formEdicao">
+                <p:dialog id="dlgEditarLocker"
+                          widgetVar="wgdEditarLocker"
+                          modal="true"
+                          closable="false"
+                          closeOnEscape="true"
+                          resizable="false"
+                          header="#{msg.rotuloLojistaEditarLocker}">
+
+                    <p:outputPanel id="outEdicao" autoUpdate="true">
+                        <p:fieldset legend="Descrição">
+                            <p:inputText id="txtEditarDescConjunto" value="#{conjuntoLockerBean.conjuntoLocker.conjunto_locker_desc}" style="width: 100%" >
+                                <p:watermark value="Descrição do Conjunto" for="txtEditarDescConjunto" />
+                            </p:inputText>
+                        </p:fieldset>
+
+                        <p:fieldset legend="Lockers">
+
+                            <p:dataTable id="tbLocker"
+                                         scrollable="true"
+                                         scrollHeight="100"
+                                         value="#{conjuntoLockerBean.lstLockers}"
+                                         var="locker">
+
+                                <p:column headerText="Descrição">
+                                    #{locker.locker_desc}
+                                </p:column>
+                                <p:column headerText="Disponibilização">
+                                    #{locker.status.statusFormatado}
+                                </p:column>
+                                <p:column headerText="Status">
+                                    #{locker.bolStatusExibicao}
+                                </p:column>
+                                <p:column headerText="Tamanho">
+                                    <p:selectOneMenu value="#{locker.dimensao.id_dimensao}" style="width: 100%" disabled="#{locker.status.id_status eq '1' or locker.bolStatus}">
+                                        <f:selectItem itemLabel="PEQUENO"   itemValue="1" />
+                                        <f:selectItem itemLabel="MEDIO"     itemValue="2"/>
+                                        <f:selectItem itemLabel="GRANDE"    itemValue="3"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="Alterar Status">
+                                    <div align="center">
+                                        <p:commandButton value="#{conjuntoLockerBean.nomeBotao(locker)}" disabled="#{locker.status.id_status eq '1'}" actionListener="#{conjuntoLockerBean.alterarStatus(locker)}" />
+                                    </div>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+
+                        <p:fieldset legend="#{msg.tituloClienteEndereco}">
+                            <h:panelGrid columns="3">
+                                <h:panelGroup>
+                                    <p:inputMask id="txtEditarCep" 
+                                                 mask="99999-999"
+                                                 value="#{conjuntoLockerBean.conjuntoLocker.logradouro.nroCepFormatado}">
+                                        <p:ajax event="blur" update="outEditarEndereco" listener="#{conjuntoLockerBean.procurarCep()}" />
+                                    </p:inputMask>
+                                    <p:watermark for="txtEditarCep" value="#{msg.rotuloCEP}" />
+                                </h:panelGroup>
+                                <h:panelGroup style="width: 15px" />
+                                <p:inputText id="txtEditarNumero" value="#{conjuntoLockerBean.conjuntoLocker.nro_localizacao}" >
+                                    <p:watermark value="#{msg.rotuloNumero}" for="txtEditarNumero" />
+                                </p:inputText>
+                            </h:panelGrid>
+
+                            <p:outputPanel id="outEditarEndereco">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <h:panelGroup>
+                                        <p:inputText id="txtEditarLogradouro" 
+                                                     styleClass="campoUnicoCliente"
+                                                     value="#{conjuntoLockerBean.conjuntoLocker.logradouro.logradouroFormatado}" 
+                                                     disabled="true" />
+                                    </h:panelGroup>
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                    <h:panelGroup>
+                                        <p:inputText id="txtEditarBairro"
+                                                     value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.desc_bairro}" 
+                                                     disabled="true"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:inputText id="txtEditarCidade"
+                                                     value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.cidade.desc_cidade}"  
+                                                     disabled="true"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:inputText id="txtEditarEstado"
+                                                     value="#{conjuntoLockerBean.conjuntoLocker.logradouro.bairro.cidade.uf.sigla_uf}"  
+                                                     disabled="true"/>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </p:fieldset>
+                    </p:outputPanel>
+
+                    <h:panelGrid columns="2" style="width: 100%">
+                        <p:commandButton value="#{msg.rotuloSair}" style="float: left" oncomplete="PF('wgdEditarLocker').hide()" />
+                        <p:commandButton id="btnEditarGravar" 
+                                         value="#{msg.rotuloSalvar}" 
+                                         style="float: right" 
+                                         actionListener="#{conjuntoLockerBean.alterar}"
+                                         update=":formLockers:dgvLockers"
+                                         oncomplete="PF('wgdEditarLocker').hide()" />
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

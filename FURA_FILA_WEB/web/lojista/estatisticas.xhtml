@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+
+            <h:form>
+                <p:panel header="Tipo de pesquisa:" style="width: 50%">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Tipo de Pesquisa:" />
+                        <p:selectOneMenu value="#{estatisticasBean.tipoPesquisa}">
+                            
+                            <f:selectItem itemLabel="Selecione..." itemValue="0" />
+                            <f:selectItem itemLabel="Vendas confirmadas por dia" itemValue="1" />
+
+                            <p:ajax event="change" update="pnTipoPesquisa1" />
+                            
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    
+                </p:panel>
+                <!--===================================================================-->
+                <!--======================== PESQUISA POR DIA =========================-->
+                <!--===================================================================-->
+                <p:panel id="pnTipoPesquisa1"
+                         visible="#{estatisticasBean.tipoPesquisa == 1}"
+                         header="Vendas confirmadas por dia">
+                    
+                    <p:fieldset legend="Data:">
+                        <h:panelGrid columns="2">
+                            <p:calendar id="popup" effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" value="#{estatisticasBean.comanda.dataConfirmacaoDate}"/>
+                            <p:commandButton value="Pesquisar" action="#{estatisticasBean.pesquisar()}" update="dgvComanda" />
+                        </h:panelGrid>
+                    </p:fieldset>
+                    
+                    <p:dataTable id="dgvComanda"
+                                 value="#{estatisticasBean.lstComanda}"
+                                 var="comanda"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                 paginator="true" rows="10" >
+                        
+                        <p:column headerText="Quantidade" footerText="#{estatisticasBean.totalProdutos} produto(s)">
+                            
+                            <h:outputLabel value="#{comanda.qtdTotal}" />
+                            
+                        </p:column>
+                        
+                        <p:column headerText="Total de compra" footerText="#{estatisticasBean.qtdVendidaFormatada}">
+                            
+                            <h:outputLabel value="#{comanda.totalCompraFormatada}" />
+                            
+                        </p:column>
+                        
+                        <p:column headerText="Forma de Pagamento">
+                            
+                            <h:outputLabel value="#{comanda.formaPgto.formaPagtoFormatada}" />
+                            
+                        </p:column>
+                        
+                        <f:facet name="{Exporters}" >
+                            <div style="float: right">
+                                <p:commandLink actionListener="#{estatisticasBean.criarPlanilha()}" ajax="false" rendered="#{not empty estatisticasBean.lstComanda}">
+                                    <p:graphicImage url="/resources/xls32x32.png"/>
+                                </p:commandLink>
+                            </div>
+                        </f:facet>
+                        
+                    </p:dataTable>
+                    
+                </p:panel>
+                <!--===================================================================-->
+                <!--===================================================================-->
+                
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
+</html>

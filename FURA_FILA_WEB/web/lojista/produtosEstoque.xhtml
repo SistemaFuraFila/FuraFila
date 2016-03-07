@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head></h:head>
+
+    <p:growl id="grMsg" showDetail="true" life="5000" />
+
+    <h:form>
+
+        <p:panelGrid columns="2">
+            
+            <f:facet name="header" >
+                <h:outputLabel value="#{msg.rotuloProduto}" />
+            </f:facet>
+            
+            <p:outputLabel value="#{msg.rotuloProduto}:" />
+            <p:inputText value="#{produtoBean.produtos.produto}" />
+            
+            <p:outputLabel value="#{msg.rotuloEstoqueMaximo}:" />
+            <p:inputText value="#{produtoBean.produtos.qtdMaxima}"/>
+            
+            <p:outputLabel value="#{msg.rotuloEstoqueMinimo}:" />
+            <p:inputText value="#{produtoBean.produtos.qtdMinima}"/>
+            
+            <p:outputLabel value="#{msg.rotuloTipoProduto}:" />
+            <p:selectOneMenu value="#{produtoBean.produtos.tipoProduto.cdTipoProduto}" style="width:100%" >
+                <f:selectItems var="tipoProduto" 
+                               itemLabel="#{tipoProduto.tipoProduto}" 
+                               itemValue="#{tipoProduto.cdTipoProduto}" 
+                               value="#{produtoBean.lstTipoProduto}" />
+            </p:selectOneMenu>
+            
+            <f:facet name="footer">
+                <p:commandButton value="#{msg.rotuloGravar}" style="width:100%" actionListener="#{produtoBean.gravar()}" ajax="false" />
+            </f:facet>
+            
+        </p:panelGrid>
+
+    </h:form>
+</html>

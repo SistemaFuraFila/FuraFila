@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:composition template="template.xhtml" >
+        <ui:define name="corpo">
+            <h:body>
+                <h:form id="formLocker">
+                    <h:inputHidden  id="txtLatitude"  value="#{comprarProdutosBean.latitudeHidden}"  />
+                    <h:inputHidden  id="txtLongitude" value="#{comprarProdutosBean.longitudeHidden}" />
+                    <ui:include src="geoMap.xhtml" />
+                    <p:fieldset id="fsLocker" legend="#{msg.tituloClienteEndereco}" styleClass="conteinerCliente">
+                        <p:outputPanel id="pnEndereco">
+                            <h:panelGroup>
+                                <p:inputMask mask="99999-999" id="txtcep" value="#{comprarProdutosBean.logradouro.nroCepFormatado}">
+                                    <p:watermark value="#{msg.rotuloGeoMapFornecaoCep}" for="txtcep" />
+                                </p:inputMask>
+                                <p:commandButton value="#{msg.rotuloPaginaGeoMapOk}" 
+                                                 actionListener="#{comprarProdutosBean.pesquisarGeolocalizacao()}"
+                                                 update="formGeo:gmMap pnEndereco formGeo:dtLockers" ajax="false"/>
+                            </h:panelGroup>
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:panelGroup>
+                                    <p:inputText id="txtLogradouro" 
+                                                 value="#{comprarProdutosBean.logradouro.logradouroFormatado}" 
+                                                 styleClass="campoUnicoCliente" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3" styleClass="panelGridCliente">
+                                <h:panelGroup>
+                                    <p:inputText id="txtBairro" value="#{comprarProdutosBean.logradouro.bairro.desc_bairro}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtCidade" value="#{comprarProdutosBean.logradouro.bairro.cidade.desc_cidade}"/>
+                                </h:panelGroup>
+
+                                <h:panelGroup>
+                                    <p:inputText id="txtEstado" value="#{comprarProdutosBean.logradouro.bairro.cidade.uf.sigla_uf}"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </p:fieldset>
+                    <div style="float: left">
+                        <p:commandButton id="btnAnterior" 
+                                         value="Anterior" 
+                                         disabled="#{comprarProdutosBean.tabIndex == 0}" 
+                                         update=":formBotoes:btnProximo :formBotoes:btnAnterior formFinaliza:tbFinalizar" 
+                                         actionListener="#{comprarProdutosBean.retroceder}"
+                                         ajax="false"/>
+                    </div>
+                    <div style="float: right">
+                        <p:commandButton id="btnProximo" 
+                                         value="Próximo" 
+                                         disabled="#{comprarProdutosBean.tabIndex == 2}"
+                                         update=":formBotoes:btnProximo :formBotoes:btnAnterior formFinaliza:tbFinalizar"
+                                         actionListener="#{comprarProdutosBean.irResumoPedido}"
+                                         ajax="false"/>
+                    </div>
+                    <p:remoteCommand name="organizarLockers" update="formGeo:dtLockers" actionListener="#{comprarProdutosBean.organizarLockers}"/>
+                </h:form>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+
+</html>
