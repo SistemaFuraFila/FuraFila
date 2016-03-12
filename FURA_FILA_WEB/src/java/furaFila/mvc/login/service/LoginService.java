@@ -1,6 +1,5 @@
 package furaFila.mvc.login.service;
 
-import furaFila.mvc.estabelecimentoLogin.business.EstabelecimentoLoginBusiness;
 import furaFila.mvc.login.business.LoginBusiness;
 import furaFila.mvc.login.model.Login;
 import furaFila.utils.FuraFilaConstants;
@@ -15,7 +14,6 @@ import java.util.List;
 public class LoginService implements ILoginService{
 
     private LoginBusiness loginBusiness = new LoginBusiness();
-    private EstabelecimentoLoginBusiness estabelecimentoLoginBusiness = new EstabelecimentoLoginBusiness();
 
     @Override
     public Login logarSe(Login login) throws Exception {
@@ -42,8 +40,8 @@ public class LoginService implements ILoginService{
     }
 
     @Override
-    public int verificarDuplicidade(Login login) throws Exception{
-        return getLoginBusiness().pegarUsuario(login).size();
+    public int verificarDuplicidade(Login login, boolean isAlteracao) throws Exception{
+        return getLoginBusiness().obterUsuario(login, isAlteracao).size();
     }
     
     @Override
@@ -69,7 +67,7 @@ public class LoginService implements ILoginService{
         return lstEntregadores;
         
     }
-    
+
     public LoginBusiness getLoginBusiness() {
         return loginBusiness;
     }
@@ -78,12 +76,5 @@ public class LoginService implements ILoginService{
         this.loginBusiness = loginBusiness;
     }
 
-    public EstabelecimentoLoginBusiness getEstabelecimentoLoginBusiness() {
-        return estabelecimentoLoginBusiness;
-    }
-
-    public void setEstabelecimentoLoginBusiness(EstabelecimentoLoginBusiness estabelecimentoLoginBusiness) {
-        this.estabelecimentoLoginBusiness = estabelecimentoLoginBusiness;
-    }
 
 }

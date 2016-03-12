@@ -61,6 +61,7 @@ public class LoginBusiness {
         BancoDados.executaComando(strQuery);
         
     }    
+    
     public void alterarDisponibilidade(Login login) throws Exception{
         
         String strQuery = "UPDATE LOGIN SET disponivel_entrega = " + login.getDisponivel_entregaSQL() + " WHERE id_login = " + login.getId_login();
@@ -83,9 +84,11 @@ public class LoginBusiness {
         
     }
 
-    public List<String> pegarUsuario(Login login) throws Exception{
+    public List<String> obterUsuario(Login login, boolean isAlteracao) throws Exception{
         
-        String strQuery = "SELECT L.usuario AS [USUARIO] FROM LOGIN L WHERE L.usuario LIKE '" + login.getUsuario() + "'";
+        String complementoQuery = isAlteracao ? " AND id_login <> " + login.getId_login() : "";
+        
+        String strQuery = "SELECT L.usuario AS [USUARIO] FROM LOGIN L WHERE L.usuario LIKE '" + login.getUsuario() + "'" + complementoQuery;
         
         return BancoDados.retornaRegistro(strQuery);
         
@@ -104,4 +107,5 @@ public class LoginBusiness {
         return BancoDados.retorna_N_Registros(strQuery);
         
     }
+
 }

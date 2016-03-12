@@ -11,10 +11,11 @@ import java.util.List;
  *
  * @author Wellington Gonçalves Pires
  */
-public class TipoProdutoService {
+public class TipoProdutoService implements ITipoProdutoService{
 
     private TipoProdutoBusiness tipoProdutoBusiness = new TipoProdutoBusiness();
 
+    @Override
     public List<TipoProduto> listarTipoProduto(boolean isAdministador) throws Exception {
 
         TipoProduto tipoProduto;
@@ -41,6 +42,7 @@ public class TipoProdutoService {
 
     }
 
+    @Override
     public int pegarTipoProduto(TipoProduto tipoProduto) throws Exception {
 
         List<String> lstDados = getTipoProdutoBusiness().listarTipoProduto(tipoProduto);

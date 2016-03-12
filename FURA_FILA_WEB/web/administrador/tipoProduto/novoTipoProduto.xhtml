@@ -11,7 +11,7 @@
         <ui:define name="corpo">
             <h:form id="formPrincipal">
                 <div align="center" class="ui-paginator-page ui-state-default ui-state-active ui-corner-all tituloPagina">
-                    <h:outputLabel value="Novo Tipo de Produto"  styleClass="labelTitulo" />
+                    <h:outputLabel value="#{msg.rotuloNovoTipoProduto}"  styleClass="labelTitulo" />
                 </div>
                 <p:separator styleClass="separador" />
 
@@ -22,7 +22,7 @@
                         <p:inputText id="txtTipoProduto" 
                                      value="#{tipoProdutoBean.tipoProduto.tipo_produto_desc}"
                                      required="true"
-                                     requiredMessage="O campo Tipo de Produto não pode estar vazio"/>
+                                     requiredMessage="#{msg.mensagemTipoProdutoVazio}"/>
                         <p:watermark value="#{msg.rotuloTemplateAdministadorTipoProduto}*" for="txtTipoProduto" />
                     </p:panel>
 

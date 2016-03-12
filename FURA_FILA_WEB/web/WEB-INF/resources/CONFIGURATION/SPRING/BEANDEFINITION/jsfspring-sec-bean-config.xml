@@ -14,8 +14,4 @@
         <beans:property name="authenticationManager" ref="authenticationManager"></beans:property>
     </beans:bean>
     
-    <beans:bean id="entregadores" name="entregadores" class="furaFila.mvc.login.bean.EntregadoresBean" scope="prototype">
-        <beans:property name="iLoginService" value="furaFila.mvc.login.service.LoginService" ></beans:property>
-    </beans:bean>
-    
 </beans:beans>

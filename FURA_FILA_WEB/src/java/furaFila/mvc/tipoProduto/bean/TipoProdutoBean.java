@@ -2,6 +2,7 @@ package furaFila.mvc.tipoProduto.bean;
 
 import furaFila.mvc.tipoProduto.business.TipoProdutoBusiness;
 import furaFila.mvc.tipoProduto.model.TipoProduto;
+import furaFila.mvc.tipoProduto.service.ITipoProdutoService;
 import furaFila.mvc.tipoProduto.service.TipoProdutoService;
 import furaFila.utils.FuraFilaConstants;
 import furaFila.utils.FuraFilaUtils;
@@ -29,19 +30,19 @@ public class TipoProdutoBean implements Serializable {
     private List<TipoProduto> lstTipoProduto = null;
 
     private TipoProdutoBusiness tipoProdutoBusiness = null;
-
-    private TipoProdutoService tipoProdutoService = null;
+    
+    private ITipoProdutoService iTipoProdutoService = null;
 
     private Boolean flgBotoes = null;
 
     public String inicializarTipoProduto() {
 
         try {
-            tipoProdutoBusiness = new TipoProdutoBusiness();
-            tipoProdutoService = new TipoProdutoService();
-            tipoProduto = new TipoProduto();
-            flgBotoes = true;
-            setLstTipoProduto(getTipoProdutoService().listarTipoProduto(true));
+            this.tipoProdutoBusiness = new TipoProdutoBusiness();
+            this.iTipoProdutoService = new TipoProdutoService();
+            this.tipoProduto = new TipoProduto();
+            this.flgBotoes = true;
+            setLstTipoProduto(this.iTipoProdutoService.listarTipoProduto(true));
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
         }
@@ -52,7 +53,7 @@ public class TipoProdutoBean implements Serializable {
     public String inicializarNovoTipoProduto() {
 
         try {
-            tipoProduto = new TipoProduto();
+            this.tipoProduto = new TipoProduto();
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
         }
@@ -63,13 +64,14 @@ public class TipoProdutoBean implements Serializable {
     public void gravar(ActionEvent ae) {
 
         try {
-            
             if(tipoProdutoExiste()){
                 FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.AVISO_TIPO_PRODUTO_EXISTE);
                 return;
             }
-            
             getTipoProdutoBusiness().gravar(getTipoProduto());
+            
+            FuraFilaUtils.growlInfo(FuraFilaConstants.INFO_GROWL_TITULO, FuraFilaConstants.INFO_TIPO_PRODUTO_CADASTRADO);
+            
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
         }
@@ -126,7 +128,7 @@ public class TipoProdutoBean implements Serializable {
         boolean tipoProdutoExiste = false;
         
         try {
-            tipoProdutoExiste = getTipoProdutoService().pegarTipoProduto(getTipoProduto()) > 0;
+            tipoProdutoExiste = this.iTipoProdutoService.pegarTipoProduto(getTipoProduto()) > 0;
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
         }
@@ -159,14 +161,6 @@ public class TipoProdutoBean implements Serializable {
 
     public void setTipoProdutoBusiness(TipoProdutoBusiness tipoProdutoBusiness) {
         this.tipoProdutoBusiness = tipoProdutoBusiness;
-    }
-
-    public TipoProdutoService getTipoProdutoService() {
-        return tipoProdutoService;
-    }
-
-    public void setTipoProdutoService(TipoProdutoService tipoProdutoService) {
-        this.tipoProdutoService = tipoProdutoService;
     }
 
     public Boolean getFlgBotoes() {

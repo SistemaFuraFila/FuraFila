@@ -10,7 +10,6 @@ import furaFila.utils.Navegacao;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import org.primefaces.event.SelectEvent;
@@ -28,20 +27,22 @@ public class EntregadoresBean implements Serializable {
 
     private List<Login> lstEntregadores = null;
 
-    @ManagedProperty(value = "#{iLoginService}")
-    private ILoginService iLoginService = null;
+    private ILoginService iLoginService;
 
     private LoginBusiness loginBusiness  = null;
 
     private Login login  = null;
 
     private Boolean flgBtnExcluir = null;
+    
+    private Boolean isAlteracao = null;
 
     public String inicializarEntregadores(){
         try {
-            loginBusiness = new LoginBusiness();
-            login = new Login();
-            setLstEntregadores(this.getiLoginService().listarEntregador());
+            this.loginBusiness = new LoginBusiness();
+            this.login = new Login();
+            this.iLoginService = new LoginService();
+            this.lstEntregadores = this.iLoginService.listarEntregador();
             flgBtnExcluir = true;
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
@@ -53,43 +54,55 @@ public class EntregadoresBean implements Serializable {
     
     public String inicializarNovoEntregador(){
         login = new Login();
+        isAlteracao = false;
         return Navegacao.irPaginaNovoEntregador();
     }
     
     public String inicializarEditarEntregador(){
+        isAlteracao = true;
         return Navegacao.irPaginaNovoEntregador();
     }
     
-    public void gravar(ActionEvent ae) {
-
+    public void salvar(ActionEvent ae){
+        
         try {
-            
-            if (!usuarioDuplicado()) {
-                FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.AVISO_ENTREGADOR_EXISTE);
-                return;
+            if (isAlteracao) {
+                alterar();
+            } else {
+                gravar();
             }
-            
-            getLogin().setStatus(Boolean.TRUE);
-            getLogin().setDisponivel_entrega(Boolean.TRUE);
-            getLogin().getPermissao().setId_permissao(FuraFilaConstants.CODIGO_PERFIL_4);
-            getLoginBusiness().gravar(getLogin());
-
-            FuraFilaUtils.growlInfo(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.INFO_ENTREGADOR_CADASTRADO);
-            
         } catch (Exception ex) {
             FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
         }
+        
+    }
+    
+    public void gravar() throws Exception {
+
+        if (usuarioDuplicado()) {
+            FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.AVISO_ENTREGADOR_EXISTE);
+            return;
+        }
+
+        getLogin().setStatus(Boolean.TRUE);
+        getLogin().setDisponivel_entrega(Boolean.TRUE);
+        getLogin().getPermissao().setId_permissao(FuraFilaConstants.CODIGO_PERFIL_4);
+        getLoginBusiness().gravar(getLogin());
+
+        FuraFilaUtils.growlInfo(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.INFO_ENTREGADOR_CADASTRADO);
 
     }
 
-    public void alterar(ActionEvent ae) {
+    public void alterar() throws Exception {
 
-        try {
-            getLoginBusiness().alterar(getLogin());
-        } catch (Exception ex) {
-            FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, ex.getMessage());
+        if (usuarioDuplicado()) {
+            FuraFilaUtils.growlAviso(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.AVISO_ENTREGADOR_EXISTE);
+            return;
         }
 
+        getLoginBusiness().alterar(getLogin());
+        
+        FuraFilaUtils.growlInfo(FuraFilaConstants.AVISO_GROWL_TITULO, FuraFilaConstants.INFO_ENTREGADOR_ALTERADO);
     }
 
     public void alterarStatus(ActionEvent ae) {
@@ -142,12 +155,9 @@ public class EntregadoresBean implements Serializable {
         }
     }
     
-    private Boolean usuarioDuplicado(){
-        
-        return true;
-        
+    private Boolean usuarioDuplicado() throws Exception{
+        return getiLoginService().verificarDuplicidade(login, isAlteracao) > 0;
     }
-
     
     public List<Login> getLstEntregadores() {
         return lstEntregadores;
@@ -189,6 +199,14 @@ public class EntregadoresBean implements Serializable {
 
     public void setiLoginService(ILoginService iLoginService) {
         this.iLoginService = iLoginService;
+    }
+
+    public Boolean getIsAlteracao() {
+        return isAlteracao;
+    }
+
+    public void setIsAlteracao(Boolean isAlteracao) {
+        this.isAlteracao = isAlteracao;
     }
 
 }

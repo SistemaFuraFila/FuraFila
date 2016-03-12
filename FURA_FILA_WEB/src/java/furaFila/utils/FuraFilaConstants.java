@@ -167,6 +167,8 @@ public class FuraFilaConstants {
     public static final String INFO_PRODUTO_AD_CARRINHO = "Produto adicionado ao carrinho!";
     public static final String INFO_PRODUTO_DEL_CARRINHO = "Produto removido do carrinho!";
     public static final String INFO_ENTREGADOR_CADASTRADO = "Entregador cadastrado com sucesso!";
+    public static final String INFO_ENTREGADOR_ALTERADO = "Entregador alterado com sucesso!";
+    public static final String INFO_TIPO_PRODUTO_CADASTRADO = "Tipo Produto cadastrado com sucesso!";
 
     // -------------> SESSÕES
     public static final String SESSAO_LOGIN = "login";

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ILoginService {
     
     public Login logarSe(Login login) throws Exception;
-    public int verificarDuplicidade(Login login) throws Exception;
+    public int verificarDuplicidade(Login login, boolean isAlteracao) throws Exception;
     public List<Login> listarEntregador() throws Exception;
     
 }
